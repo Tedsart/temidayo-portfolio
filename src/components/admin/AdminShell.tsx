@@ -11,7 +11,7 @@ export function AdminShell({
   email,
   children,
 }: {
-  active: "dashboard" | "projects" | "media";
+  active: "dashboard" | "projects" | "media" | "settings";
   email: string | null;
   children: React.ReactNode;
 }) {
@@ -19,6 +19,7 @@ export function AdminShell({
     { id: "dashboard" as const, label: "Dashboard", href: "/admin" },
     { id: "projects" as const, label: "Projects", href: "/admin/projects" },
     { id: "media" as const, label: "Media", href: "/admin/media" },
+    { id: "settings" as const, label: "Site settings", href: "/admin/settings" },
   ];
 
   return (

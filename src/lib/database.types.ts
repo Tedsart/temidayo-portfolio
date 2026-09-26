@@ -133,7 +133,8 @@ export interface Database {
             | "profile"
             | "document"
             | "dataset"
-            | "other";
+            | "other"
+            | "cv";
           storage_path: string;
           file_name: string;
           mime_type: string | null;
@@ -153,7 +154,8 @@ export interface Database {
             | "profile"
             | "document"
             | "dataset"
-            | "other";
+            | "other"
+            | "cv";
           storage_path: string;
           file_name: string;
           mime_type?: string | null;
@@ -185,7 +187,8 @@ export interface Database {
             | "github"
             | "dataset"
             | "demo"
-            | "other";
+            | "other"
+            | "cv";
           label: string;
           url: string;
           sort_order: number;
@@ -200,7 +203,8 @@ export interface Database {
             | "github"
             | "dataset"
             | "demo"
-            | "other";
+            | "other"
+            | "cv";
           label: string;
           url: string;
           sort_order?: number;
@@ -219,6 +223,42 @@ export interface Database {
           },
         ];
       };
+      site_settings: {
+        Row: {
+          id: number;
+          intro: string | null;
+          statistics_background: string | null;
+          experience: Json;
+          interests: string | null;
+          linkedin_url: string | null;
+          github_url: string | null;
+          contact_email: string | null;
+          updated_at: string;
+        };
+        Insert: {
+          id?: number;
+          intro?: string | null;
+          statistics_background?: string | null;
+          experience?: Json;
+          interests?: string | null;
+          linkedin_url?: string | null;
+          github_url?: string | null;
+          contact_email?: string | null;
+          updated_at?: string;
+        };
+        Update: {
+          id?: number;
+          intro?: string | null;
+          statistics_background?: string | null;
+          experience?: Json;
+          interests?: string | null;
+          linkedin_url?: string | null;
+          github_url?: string | null;
+          contact_email?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {
@@ -236,7 +276,8 @@ export interface Database {
         | "profile"
         | "document"
         | "dataset"
-        | "other";
+        | "other"
+        | "cv";
       link_type:
         | "powerbi"
         | "looker"

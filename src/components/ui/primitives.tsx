@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { DisplayReveal } from "@/components/motion/Reveal";
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import type { ProjectStatus } from "@/lib/types";
 
@@ -123,7 +124,7 @@ export function SectionHeading({
       <div className="max-w-2xl">
         {index ? <p className="section-index mb-3">{index}</p> : null}
         <h2 className="text-[clamp(1.75rem,4vw,2.75rem)] font-semibold leading-[1.05]">
-          {title}
+          <DisplayReveal>{title}</DisplayReveal>
         </h2>
         {description ? (
           <p className="mt-4 max-w-xl text-base leading-relaxed text-muted md:text-lg">

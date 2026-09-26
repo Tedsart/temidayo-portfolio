@@ -23,7 +23,8 @@ export type AssetType =
   | "profile"
   | "document"
   | "dataset"
-  | "other";
+  | "other"
+  | "cv";
 
 export const ASSET_TYPES: AssetType[] = [
   "thumbnail",
@@ -34,6 +35,7 @@ export const ASSET_TYPES: AssetType[] = [
   "document",
   "dataset",
   "other",
+  "cv",
 ];
 
 export const IMAGE_ASSET_TYPES: AssetType[] = [
@@ -48,6 +50,7 @@ export const FILE_ASSET_TYPES: AssetType[] = [
   "document",
   "dataset",
   "other",
+  "cv",
 ];
 
 export type LinkType =
@@ -172,15 +175,39 @@ export type ProjectSummary = Pick<
   thumbnail: ProjectAsset | null;
 };
 
+/** One experience entry edited in Admin → Site settings. */
+export interface ExperienceEntry {
+  title: string;
+  organization: string | null;
+  period: string | null;
+  note: string | null;
+}
+
+/** CMS-editable site profile (site_settings table). */
+export interface SiteSettings {
+  intro: string | null;
+  statistics_background: string | null;
+  experience: ExperienceEntry[];
+  interests: string | null;
+  linkedin_url: string | null;
+  github_url: string | null;
+  contact_email: string | null;
+  updated_at: string;
+}
+
 export interface SiteProfile {
   name: string;
   role: string;
   tagline: string;
-  intro: string;
+  intro: string | null;
   photo: ProjectAsset | null;
+  cv: ProjectAsset | null;
   email: string | null;
   linkedin: string | null;
   github: string | null;
+  statistics_background: string | null;
+  experience: ExperienceEntry[];
+  interests: string | null;
 }
 
 export interface AdminStats {

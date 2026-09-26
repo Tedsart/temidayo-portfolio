@@ -248,9 +248,13 @@ export const placeholderProfile: SiteProfile = {
   intro:
     "[Short introduction goes here — two or three sentences about how Temidayo works and what he cares about in analysis. Upload a real profile photo in Admin → Media.]",
   photo: null,
+  cv: null,
   email: null,
   linkedin: null,
   github: null,
+  statistics_background: null,
+  experience: [],
+  interests: null,
 };
 
 export const isPlaceholderText = (value?: string | null): boolean =>

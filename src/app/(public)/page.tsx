@@ -5,6 +5,7 @@ import { ContactCTA } from "@/components/public/ContactCTA";
 import { FallbackNotice } from "@/components/public/FallbackNotice";
 import { Hero } from "@/components/public/Hero";
 import { ProcessTimeline } from "@/components/public/ProcessTimeline";
+import { Ticker } from "@/components/public/Ticker";
 import { ProjectList } from "@/components/public/ProjectCard";
 import { Reveal } from "@/components/motion/Reveal";
 import { Container, EmptyState, SectionHeading } from "@/components/ui/primitives";
@@ -28,6 +29,8 @@ export default async function HomePage() {
       {usingFallback ? <FallbackNotice /> : null}
 
       <Hero />
+
+      <Ticker />
 
       {/* 01 — Selected work */}
       <Container as="section" className="py-20 md:py-28" >

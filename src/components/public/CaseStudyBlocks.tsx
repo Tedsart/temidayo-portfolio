@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { CaptionedFigure, MediaFallback } from "@/components/public/AssetImage";
+import { CountUp } from "@/components/motion/CountUp";
 import { Reveal } from "@/components/motion/Reveal";
 import { approachPipeline } from "@/lib/config";
 import { LINK_TYPE_LABELS, type ProjectAsset, type ProjectFinding, type ProjectLink } from "@/lib/types";
@@ -54,7 +55,7 @@ export function FindingGrid({ findings }: { findings: ProjectFinding[] }) {
             Finding {padIndex(i + 1)}
           </p>
           <p className="mt-5 text-[clamp(2.25rem,4.5vw,3.5rem)] font-semibold leading-none tracking-[-0.04em] text-ink">
-            {finding.headline}
+            <CountUp value={finding.headline} />
           </p>
           <h3 className="mt-4 text-base font-semibold leading-snug">{finding.title}</h3>
           {finding.explanation ? (

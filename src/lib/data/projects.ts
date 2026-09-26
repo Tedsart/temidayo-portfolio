@@ -1,7 +1,7 @@
 import "server-only";
 
 import { unstable_cache } from "next/cache";
-import { isSupabaseConfigured } from "../config";
+import { isSupabaseConfigured, siteConfig } from "../config";
 import {
   placeholderProfile,
   placeholderProjects,
@@ -16,6 +16,7 @@ import { withPublicUrl, withPublicUrls } from "../supabase/media";
 import type {
   AdminStats,
   DataResult,
+  ExperienceEntry,
   Project,
   ProjectAsset,
   ProjectFinding,
@@ -24,6 +25,7 @@ import type {
   ProjectSummary,
   ProjectWithRelations,
   SiteProfile,
+  SiteSettings,
 } from "../types";
 
 /**
@@ -330,24 +332,89 @@ export async function getAllPublishedSlugs(): Promise<string[]> {
   return (data ?? []).map((r) => r.slug);
 }
 
+/** Coerces the jsonb experience column into typed entries, tolerantly. */
+function parseExperience(raw: unknown): ExperienceEntry[] {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .filter((e): e is Record<string, unknown> => Boolean(e) && typeof e === "object")
+    .map((e) => ({
+      title: typeof e.title === "string" ? e.title : "",
+      organization: typeof e.organization === "string" ? e.organization : null,
+      period: typeof e.period === "string" ? e.period : null,
+      note: typeof e.note === "string" ? e.note : null,
+    }))
+    .filter((e) => e.title.trim().length > 0);
+}
+
+async function querySiteProfile(): Promise<DataResult<SiteProfile>> {
+  const supabase = createSupabasePublicClient();
+  if (!supabase) return fail("Supabase is not configured on the server.");
+
+  const [settingsRes, assetsRes] = await Promise.all([
+    supabase.from("site_settings").select("*").eq("id", 1).maybeSingle(),
+    supabase
+      .from("project_assets")
+      .select("*")
+      .is("project_id", null)
+      .in("asset_type", ["profile", "cv"]),
+  ]);
+
+  if (settingsRes.error) return fail(settingsRes.error.message);
+  if (assetsRes.error) return fail(assetsRes.error.message);
+
+  const s = settingsRes.data;
+  const assets = withPublicUrls(assetsRes.data ?? []);
+
+  return ok({
+    ...placeholderProfile,
+    intro: s?.intro ?? null,
+    photo: assets.find((a) => a.asset_type === "profile") ?? null,
+    cv: assets.find((a) => a.asset_type === "cv") ?? null,
+    email: s?.contact_email ?? siteConfig.email,
+    linkedin: s?.linkedin_url ?? siteConfig.linkedin,
+    github: s?.github_url ?? siteConfig.github,
+    statistics_background: s?.statistics_background ?? null,
+    experience: parseExperience(s?.experience),
+    interests: s?.interests ?? null,
+  });
+}
+
+const cachedSiteProfile = unstable_cache(querySiteProfile, ["site-profile"], {
+  tags: ["site-settings"],
+  revalidate: 3600,
+});
+
+/** Public site profile: CMS settings first, env vars as fallback. */
 export async function getSiteProfile(): Promise<DataResult<SiteProfile>> {
   if (!isSupabaseConfigured) return fallback(placeholderProfile);
+  return cachedSiteProfile();
+}
+
+/** Raw settings row for the CMS editor (uncached, admin session). */
+export async function getSiteSettingsForAdmin(): Promise<DataResult<SiteSettings>> {
+  if (!isSupabaseConfigured) return fail("Supabase is not configured on the server.");
 
   const supabase = await createSupabaseServerClient();
   if (!supabase) return fail("Supabase is not configured on the server.");
 
   const { data, error } = await supabase
-    .from("project_assets")
+    .from("site_settings")
     .select("*")
-    .eq("asset_type", "profile")
-    .is("project_id", null)
-    .order("sort_order", { ascending: true })
-    .limit(1)
+    .eq("id", 1)
     .maybeSingle();
 
   if (error) return fail(error.message);
 
-  return ok({ ...placeholderProfile, photo: data ? withPublicUrl(data) : null });
+  return ok({
+    intro: data?.intro ?? null,
+    statistics_background: data?.statistics_background ?? null,
+    experience: parseExperience(data?.experience),
+    interests: data?.interests ?? null,
+    linkedin_url: data?.linkedin_url ?? null,
+    github_url: data?.github_url ?? null,
+    contact_email: data?.contact_email ?? null,
+    updated_at: data?.updated_at ?? new Date().toISOString(),
+  });
 }
 
 /** Every uploaded asset, newest first — powers /admin/media. */

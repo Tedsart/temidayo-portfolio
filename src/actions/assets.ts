@@ -28,6 +28,7 @@ async function guard() {
 function invalidate() {
   updateTag("projects");
   updateTag("projects:public");
+  updateTag("site-settings");
 }
 
 /**
@@ -75,7 +76,9 @@ export async function recordAsset(input: RecordAssetInput): Promise<ActionResult
   }
 
   // Single-slot types (thumbnail / hero / profile): replace the existing row.
-  const singleSlot = ["thumbnail", "hero", "profile"].includes(input.asset_type);
+  const singleSlot = ["thumbnail", "hero", "profile", "cv"].includes(
+    input.asset_type,
+  );
   if (singleSlot) {
     const query = supabase
       .from("project_assets")

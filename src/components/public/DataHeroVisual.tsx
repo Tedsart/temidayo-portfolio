@@ -1,5 +1,6 @@
 "use client";
 
+import { CountUp } from "@/components/motion/CountUp";
 import { motion, useReducedMotion } from "motion/react";
 import { useEffect, useState } from "react";
 
@@ -198,11 +199,32 @@ export function DataHeroVisual() {
             THE PATTERN
           </text>
         </motion.g>
+
+        {/* sonar pulse on the insight — quiet liveness between cycles */}
+        {!reduced ? (
+          <motion.circle
+            cx={INSIGHT.x}
+            cy={INSIGHT.y}
+            fill="none"
+            stroke="#1b45f5"
+            strokeWidth="1.5"
+            initial={{ r: 6, opacity: 0.8 }}
+            animate={{ r: 26, opacity: 0 }}
+            transition={{
+              duration: 2.4,
+              repeat: Infinity,
+              ease: "easeOut",
+              delay: 2.8,
+            }}
+          />
+        ) : null}
       </svg>
 
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-3">
         <p className="label-meta">Fig. 01 — Data → Insight</p>
-        <p className="label-meta text-faint">34 observations · 1 fitted line</p>
+        <p className="label-meta text-faint">
+          <CountUp value="34 observations · 1 fitted line" />
+        </p>
       </div>
     </div>
   );

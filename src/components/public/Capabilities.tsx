@@ -6,10 +6,19 @@ export function Capabilities() {
   return (
     <div className="grid gap-10 md:grid-cols-3 md:gap-12">
       {capabilities.map((capability, i) => (
-        <Reveal key={capability.id} index={i} className="border-t border-ink pt-6">
+        <Reveal
+          key={capability.id}
+          index={i}
+          className="group border-t border-ink pt-6"
+        >
           <div className="flex items-baseline justify-between">
-            <span className="section-index">{capability.index}</span>
-            <span aria-hidden="true" className="h-px w-10 bg-accent" />
+            <span className="section-index transition-colors duration-300 group-hover:text-accent">
+              {capability.index}
+            </span>
+            <span
+              aria-hidden="true"
+              className="h-px w-10 bg-accent transition-all duration-500 group-hover:w-16"
+            />
           </div>
 
           <h3 className="mt-5 text-2xl font-semibold uppercase tracking-[0.02em]">

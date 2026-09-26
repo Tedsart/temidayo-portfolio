@@ -7,9 +7,10 @@ import type { SiteProfile } from "@/lib/types";
 /**
  * Full About page.
  *
- * Structure is fixed; the facts are not. Anything not yet supplied by
- * Temidayo renders as an obvious placeholder slot, never as invented
- * credentials.
+ * Structure is fixed; the facts are not. Owner-supplied content comes from
+ * Admin → Site settings and Admin → Media (photo, CV). Anything not yet
+ * supplied is hidden on the live site — placeholders appear only in the
+ * pre-configuration fallback mode.
  */
 export function AboutSections({
   profile,
@@ -18,6 +19,13 @@ export function AboutSections({
   profile: SiteProfile;
   usingFallback: boolean;
 }) {
+  const showIntro = Boolean(profile.intro) || usingFallback;
+  const showStats = Boolean(profile.statistics_background) || usingFallback;
+  const showInterests = Boolean(profile.interests) || usingFallback;
+  const showExperience = profile.experience.length > 0 || usingFallback;
+  const cvUrl = profile.cv?.public_url ?? null;
+  const showCv = Boolean(cvUrl) || usingFallback;
+
   return (
     <>
       <SectionHeading
@@ -37,43 +45,74 @@ export function AboutSections({
 
         <Reveal index={1}>
           <div className="prose-editorial">
-            <p>{profile.intro}</p>
+            {showIntro ? <p>{profile.intro}</p> : null}
             <p>
-              My background is in statistics, which shapes how I work: I care
-              about what a number can and cannot support, and I would rather give
-              a precise small answer than an impressive wrong one.
+              I work with data the way an editor works with a story — every
+              number has to earn its place, and the reader always comes first.
             </p>
             <p>
-              Day to day that means cleaning messy datasets, checking assumptions,
-              building dashboards that people actually open, and writing the
-              summary that turns a chart into a decision.
+              Day to day that means cleaning messy datasets, checking
+              assumptions, building dashboards that people actually open, and
+              writing the summary that turns a chart into a decision.
             </p>
           </div>
 
+          {showExperience ? (
+            <div className="mt-10 border-t border-line pt-8">
+              <h2 className="label-meta">Experience</h2>
+              {profile.experience.length > 0 ? (
+                <ul className="mt-4 space-y-5">
+                  {profile.experience.map((entry, i) => (
+                    <li key={i} className="grid gap-1 sm:grid-cols-[1fr_auto] sm:items-baseline">
+                      <p className="text-sm font-medium text-ink">
+                        {entry.title}
+                        {entry.organization ? (
+                          <span className="text-muted"> · {entry.organization}</span>
+                        ) : null}
+                      </p>
+                      {entry.period ? (
+                        <p className="font-mono text-xs text-faint">{entry.period}</p>
+                      ) : null}
+                      {entry.note ? (
+                        <p className="text-sm leading-relaxed text-muted sm:col-span-2">
+                          {entry.note}
+                        </p>
+                      ) : null}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="mt-3 text-sm leading-relaxed text-ink-2">
+                  [Roles, internships or projects — replace with real entries only.]
+                </p>
+              )}
+            </div>
+          ) : null}
+
           <dl className="mt-10 grid gap-x-10 gap-y-6 border-t border-line pt-8 sm:grid-cols-2">
-            <div>
-              <dt className="label-meta">Statistics background</dt>
-              <dd className="mt-2 text-sm leading-relaxed text-ink-2">
-                [Your statistics education or training — replace in the CMS intro copy.]
-              </dd>
-            </div>
-            <div>
-              <dt className="label-meta">Experience</dt>
-              <dd className="mt-2 text-sm leading-relaxed text-ink-2">
-                [Roles, internships or projects — replace with real entries only.]
-              </dd>
-            </div>
-            <div>
-              <dt className="label-meta">Interests</dt>
-              <dd className="mt-2 text-sm leading-relaxed text-ink-2">
-                [What you read, follow and build outside work.]
-              </dd>
-            </div>
+            {showStats ? (
+              <div>
+                <dt className="label-meta">Statistics background</dt>
+                <dd className="mt-2 text-sm leading-relaxed text-ink-2">
+                  {profile.statistics_background ??
+                    "[Your statistics education or training.]"}
+                </dd>
+              </div>
+            ) : null}
+            {showInterests ? (
+              <div>
+                <dt className="label-meta">Interests</dt>
+                <dd className="mt-2 text-sm leading-relaxed text-ink-2">
+                  {profile.interests ?? "[What you read, follow and build outside work.]"}
+                </dd>
+              </div>
+            ) : null}
             <div>
               <dt className="label-meta">AI-assisted analytics</dt>
               <dd className="mt-2 text-sm leading-relaxed text-ink-2">
-                I use AI tools to speed up cleaning and exploration — the analysis
-                and the judgement stay human, and every number is still verified.
+                I use AI tools to speed up cleaning and exploration — the
+                analysis and the judgement stay human, and every number is
+                still verified.
               </dd>
             </div>
           </dl>
@@ -98,9 +137,9 @@ export function AboutSections({
             ))}
           </div>
           <p className="mt-6 text-sm leading-relaxed text-muted">
-            The tool follows the question. A spreadsheet can be the right answer;
-            a dashboard can be the wrong one. I pick whichever makes the insight
-            easiest to trust and easiest to use.
+            The tool follows the question. A spreadsheet can be the right
+            answer; a dashboard can be the wrong one. I pick whichever makes
+            the insight easiest to trust and easiest to use.
           </p>
         </Reveal>
 
@@ -109,20 +148,37 @@ export function AboutSections({
         </Reveal>
       </div>
 
-      <Reveal className="mt-20 border-t border-line pt-8">
-        <div className="flex flex-wrap items-center justify-between gap-6">
-          <div>
-            <MetaLabel>Curriculum vitae</MetaLabel>
-            <p className="mt-2 max-w-md text-sm leading-relaxed text-muted">
-              [Upload the CV as a document in Admin → Media to enable this
-              download. Until then this slot stays intentionally empty.]
-            </p>
+      {showCv ? (
+        <Reveal className="mt-20 border-t border-line pt-8">
+          <div className="flex flex-wrap items-center justify-between gap-6">
+            <div>
+              <MetaLabel>Curriculum vitae</MetaLabel>
+              {cvUrl ? (
+                <a
+                  href={cvUrl}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  download
+                  className="group mt-3 inline-flex items-center gap-2 border border-ink bg-ink px-5 py-3 text-sm text-paper transition-colors hover:bg-accent hover:border-accent"
+                >
+                  Download CV (PDF)
+                  <span aria-hidden="true" className="transition-transform group-hover:translate-y-0.5">
+                    ↓
+                  </span>
+                </a>
+              ) : (
+                <p className="mt-2 max-w-md text-sm leading-relaxed text-muted">
+                  [Upload the CV as a document in Admin → Media to enable this
+                  download. Until then this slot stays intentionally empty.]
+                </p>
+              )}
+            </div>
+            {usingFallback ? (
+              <span className="label-meta text-warning">Placeholder mode</span>
+            ) : null}
           </div>
-          {usingFallback ? (
-            <span className="label-meta text-warning">Placeholder mode</span>
-          ) : null}
-        </div>
-      </Reveal>
+        </Reveal>
+      ) : null}
     </>
   );
 }

@@ -49,11 +49,14 @@ export function ContactPageBody({
     window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
   }
 
+  // Channels without a configured value are hidden, never "Not configured".
   const channels = [
     { label: "Email", value: email, href: email ? `mailto:${email}` : null },
     { label: "LinkedIn", value: linkedin, href: linkedin },
     { label: "GitHub", value: github, href: github },
-  ];
+  ].filter((channel): channel is { label: string; value: string; href: string } =>
+    Boolean(channel.href),
+  );
 
   return (
     <div className="mt-14 grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
@@ -142,29 +145,29 @@ export function ContactPageBody({
       )}
 
       <aside>
-        <p className="section-index mb-5">DIRECT</p>
-        <ul className="divide-y divide-line border-y border-line">
-          {channels.map((channel) => (
-            <li key={channel.label} className="py-5">
-              <p className="label-meta">{channel.label}</p>
-              {channel.href ? (
-                <a
-                  href={channel.href}
-                  {...(channel.href.startsWith("http")
-                    ? { target: "_blank", rel: "noreferrer noopener" }
-                    : {})}
-                  className="mt-1.5 inline-block break-all text-base text-ink underline decoration-line-strong underline-offset-4 transition-colors hover:text-accent"
-                >
-                  {channel.href.startsWith("http")
-                    ? channel.href.replace(/^https?:\/\/(www\.)?/, "")
-                    : channel.href.replace(/^mailto:/, "")}
-                </a>
-              ) : (
-                <p className="mt-1.5 text-sm text-faint">Not configured yet</p>
-              )}
-            </li>
-          ))}
-        </ul>
+        {channels.length ? (
+          <>
+            <p className="section-index mb-5">DIRECT</p>
+            <ul className="divide-y divide-line border-y border-line">
+              {channels.map((channel) => (
+                <li key={channel.label} className="py-5">
+                  <p className="label-meta">{channel.label}</p>
+                  <a
+                    href={channel.href}
+                    {...(channel.href.startsWith("http")
+                      ? { target: "_blank", rel: "noreferrer noopener" }
+                      : {})}
+                    className="mt-1.5 inline-block break-all text-base text-ink underline decoration-line-strong underline-offset-4 transition-colors hover:text-accent"
+                  >
+                    {channel.href.startsWith("http")
+                      ? channel.href.replace(/^https?:\/\/(www\.)?/, "")
+                      : channel.href.replace(/^mailto:/, "")}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </>
+        ) : null}
         <p className="mt-5 text-xs leading-relaxed text-muted">
           Typical projects: inflation &amp; economic dashboards, business
           performance reporting, data cleaning and analysis, visual reports.

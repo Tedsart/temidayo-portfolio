@@ -58,6 +58,9 @@ code — it is only read by `scripts/seed-admin.mjs` and optional server tooling
    - `supabase/migrations/0001_init.sql` — tables, enums, triggers, RLS.
    - `supabase/migrations/0002_storage.sql` — the public `content` bucket and
      its storage policies (public read, admin-only write).
+   - `supabase/migrations/0003_site_settings.sql` — the CMS-editable site
+     profile (About intro, statistics background, experience, interests,
+     socials, contact email) and the `cv` asset type.
    (Or with the Supabase CLI: `supabase link … && supabase db push`.)
 
 What the schema gives you:

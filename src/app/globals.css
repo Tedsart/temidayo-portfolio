@@ -172,6 +172,22 @@
   }
 }
 
+/* Editorial marquee (Ticker). Two identical halves → a -50% loop. */
+.ticker-track {
+  animation: ticker 38s linear infinite;
+}
+.ticker-track:hover {
+  animation-play-state: paused;
+}
+@keyframes ticker {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
