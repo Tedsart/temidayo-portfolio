@@ -5,7 +5,7 @@ export default function NotFound() {
   return (
     <Container className="py-28">
       <p className="section-index">404 — NO RECORD FOUND</p>
-      <h1 className="mt-4 max-w-2xl text-[clamp(2rem,6vw,4rem)] font-semibold leading-[1.02] tracking-[-0.04em]">
+      <h1 className="mt-4 max-w-2xl text-[clamp(2rem,6vw,4rem)] font-semibold leading-[1.02] tracking-[-0.02em]">
         This page has no data behind it.
       </h1>
       <p className="mt-6 max-w-lg text-base leading-relaxed text-muted">

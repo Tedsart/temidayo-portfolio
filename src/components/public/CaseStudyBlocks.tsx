@@ -54,7 +54,7 @@ export function FindingGrid({ findings }: { findings: ProjectFinding[] }) {
           <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-faint">
             Finding {padIndex(i + 1)}
           </p>
-          <p className="mt-5 text-[clamp(2.25rem,4.5vw,3.5rem)] font-semibold leading-none tracking-[-0.04em] text-ink">
+          <p className="mt-5 text-[clamp(2.25rem,4.5vw,3.5rem)] font-semibold leading-none tracking-[-0.02em] text-ink">
             <CountUp value={finding.headline} />
           </p>
           <h3 className="mt-4 text-base font-semibold leading-snug">{finding.title}</h3>

@@ -25,7 +25,7 @@ export function ContactCTA({ profile }: { profile: SiteProfile }) {
             <p className="section-index text-paper/40">CONTACT</p>
             <h2
               id="contact-cta-heading"
-              className="mt-6 max-w-2xl text-[clamp(2rem,5.5vw,3.75rem)] font-semibold leading-[1.02] tracking-[-0.04em]"
+              className="mt-6 max-w-2xl text-[clamp(2rem,5.5vw,3.75rem)] font-semibold leading-[1.02] tracking-[-0.02em]"
             >
               Have a question worth answering with data?
             </h2>

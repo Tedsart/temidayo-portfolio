@@ -226,7 +226,7 @@ function DonutFig({ reduced }: { reduced: boolean }) {
           letterSpacing="0.12em"
           fill="#f6f3ec"
           fillOpacity={i === 0 ? 0.9 : 0.5}
-          fontFamily="var(--font-geist-mono), monospace"
+          fontFamily="var(--font-mono)"
           initial={reduced ? false : { opacity: 0, x: 8 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: reduced ? 0 : 0.5, delay: reduced ? 0 : 0.4 + i * 0.12 }}

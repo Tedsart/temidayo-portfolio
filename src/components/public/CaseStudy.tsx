@@ -75,7 +75,7 @@ export function CaseStudy({
           </Reveal>
 
           <Reveal index={1}>
-            <h1 className="mt-7 max-w-4xl text-[clamp(2.25rem,6.5vw,4.5rem)] font-semibold leading-[1.0] tracking-[-0.04em]">
+            <h1 className="mt-7 max-w-4xl text-[clamp(2.25rem,6.5vw,4.5rem)] font-semibold leading-[1.0] tracking-[-0.02em]">
               {project.title}
             </h1>
           </Reveal>

@@ -55,7 +55,7 @@ export function Navbar() {
                 key={item.href}
                 href={item.href}
                 aria-current={active ? "page" : undefined}
-                className="group relative py-1 text-sm text-ink-2 transition-colors hover:text-ink"
+                className="link-sweep group relative py-1 text-sm text-ink-2 transition-colors hover:text-ink"
               >
                 {item.label}
                 <span
