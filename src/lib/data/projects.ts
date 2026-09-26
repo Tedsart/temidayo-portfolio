@@ -322,7 +322,9 @@ export async function getAllPublishedSlugs(): Promise<string[]> {
   if (!isSupabaseConfigured) {
     return placeholderProjects.filter((p) => p.status === "published").map((p) => p.slug);
   }
-  const supabase = await createSupabaseServerClient();
+  // Stateless client: this also runs at build time (generateStaticParams,
+  // sitemap) where cookies() does not exist.
+  const supabase = createSupabasePublicClient();
   if (!supabase) return [];
   const { data } = await supabase.from("projects").select("slug").eq("status", "published");
   return (data ?? []).map((r) => r.slug);
