@@ -51,11 +51,7 @@ export default async function HomePage() {
           )}
         </div>
 
-        <Reveal className="mt-12 flex flex-wrap items-center justify-between gap-6 border-t border-line pt-8">
-          <p className="max-w-md text-sm leading-relaxed text-muted">
-            Every project here is stored in the database — nothing on this page is
-            hard-coded into the site.
-          </p>
+        <Reveal className="mt-12 flex flex-wrap items-center justify-end gap-6 border-t border-line pt-8">
           <Link
             href="/work"
             className="group inline-flex items-center gap-3 text-sm font-medium"

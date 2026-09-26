@@ -27,7 +27,7 @@ export function Ticker() {
                 className="flex items-center gap-8 px-8 font-mono text-[11px] uppercase tracking-[0.2em] text-paper/80"
               >
                 {item}
-                <span className="text-accent">✦</span>
+                <span className="text-marker">✦</span>
               </span>
             ))}
           </div>

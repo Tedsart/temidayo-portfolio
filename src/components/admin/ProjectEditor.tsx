@@ -362,7 +362,7 @@ export function ProjectEditor({ initial }: { initial: ProjectWithRelations | nul
                 type="checkbox"
                 checked={form.featured}
                 onChange={(e) => set("featured", e.target.checked)}
-                className="h-4 w-4 accent-[#1b45f5]"
+                className="h-4 w-4 accent-accent"
               />
               Featured on the homepage
             </label>

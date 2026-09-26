@@ -8,29 +8,31 @@
 
 /*
   Design tokens.
-  Warm off-white paper, near-black ink, one restrained royal blue.
-  Nothing else carries colour — projects keep their own identity.
+  Brand: warm bone paper, green-black ink, deep emerald for interactive
+  colour, and one highlighter lime used like an analyst's marker —
+  underlines, peaks, the line that turns data into insight.
 */
 @theme {
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  --color-paper: #f6f3ec;
-  --color-paper-2: #efebe1;
-  --color-paper-3: #e7e2d6;
-  --color-paper-inverse: #111210;
-  --color-paper-inverse-2: #1a1c19;
+  --color-paper: #f7f4ec;
+  --color-paper-2: #efeadf;
+  --color-paper-3: #e6e0d1;
+  --color-paper-inverse: #0b1f16;
+  --color-paper-inverse-2: #12291e;
 
-  --color-ink: #10110f;
-  --color-ink-2: #2e312c;
-  --color-muted: #6f746c;
-  --color-faint: #9aa097;
-  --color-line: #ded8c9;
-  --color-line-strong: #c8c1ae;
+  --color-ink: #0f1512;
+  --color-ink-2: #2a332d;
+  --color-muted: #667064;
+  --color-faint: #939c8f;
+  --color-line: #dcd6c6;
+  --color-line-strong: #c2bca7;
 
-  --color-accent: #1b45f5;
-  --color-accent-hover: #1436cc;
-  --color-accent-soft: #e8ecff;
+  --color-accent: #0b6b45;
+  --color-accent-hover: #085436;
+  --color-accent-soft: #e2f1e6;
+  --color-marker: #d8f651;
 
   --color-positive: #17724a;
   --color-warning: #8a5a06;
@@ -66,7 +68,8 @@
   }
 
   ::selection {
-    background: color-mix(in oklab, var(--color-accent) 22%, transparent);
+    background: color-mix(in oklab, var(--color-marker) 55%, transparent);
+    color: var(--color-ink);
   }
 
   /* Visible, high-contrast focus for keyboard users, everywhere. */

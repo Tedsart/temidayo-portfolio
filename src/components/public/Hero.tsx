@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { DataHeroVisual } from "@/components/public/DataHeroVisual";
+import { InsightDeck } from "@/components/public/InsightDeck";
 import { DisplayReveal, Reveal } from "@/components/motion/Reveal";
 import { MetaLabel } from "@/components/ui/primitives";
 import { siteConfig } from "@/lib/config";
@@ -29,7 +29,7 @@ export function Hero() {
                 <span className="relative z-10">sense.</span>
                 <span
                   aria-hidden="true"
-                  className="absolute inset-x-0 bottom-[0.12em] z-0 h-[0.14em] bg-accent/25"
+                  className="absolute inset-x-0 bottom-[0.12em] z-0 h-[0.14em] bg-marker/70"
                 />
               </span>
             </DisplayReveal>
@@ -44,7 +44,7 @@ export function Hero() {
           <Reveal index={2} className="mt-9 flex flex-wrap items-center gap-3">
             <Link
               href="/work"
-              className="inline-flex items-center gap-3 bg-ink px-6 py-3.5 text-sm text-paper transition-colors hover:bg-accent"
+              className="inline-flex items-center gap-3 bg-marker px-6 py-3.5 text-sm font-medium text-ink transition-colors hover:bg-ink hover:text-marker"
             >
               Explore my work
               <span aria-hidden="true">→</span>
@@ -76,7 +76,7 @@ export function Hero() {
         </div>
 
         <Reveal index={2} y={24} className="lg:pl-4">
-          <DataHeroVisual />
+          <InsightDeck />
         </Reveal>
       </div>
     </section>

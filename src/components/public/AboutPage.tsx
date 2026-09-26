@@ -1,4 +1,4 @@
-import { DataHeroVisual } from "@/components/public/DataHeroVisual";
+import { SparkSignature } from "@/components/public/InsightDeck";
 import { ProfilePhoto } from "@/components/public/ProfilePhoto";
 import { Reveal } from "@/components/motion/Reveal";
 import { MetaLabel, SectionHeading, Tag } from "@/components/ui/primitives";
@@ -144,7 +144,7 @@ export function AboutSections({
         </Reveal>
 
         <Reveal index={1}>
-          <DataHeroVisual />
+          <SparkSignature />
         </Reveal>
       </div>
 

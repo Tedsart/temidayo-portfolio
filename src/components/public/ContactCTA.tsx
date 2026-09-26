@@ -66,10 +66,6 @@ export function ContactCTA({ profile }: { profile: SiteProfile }) {
                 ))}
               </dl>
             ) : null}
-            <p className="mt-5 text-xs leading-relaxed text-paper/40">
-              Contact details are managed in the CMS — nothing here is
-              hard-coded into the site.
-            </p>
           </Reveal>
         </div>
       </Container>
