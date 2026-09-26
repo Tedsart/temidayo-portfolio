@@ -4,7 +4,7 @@ import { updateTag } from "next/cache";
 import { isSupabaseConfigured, supabaseConfig } from "@/lib/config";
 import { createSupabaseServerClient, requireAdmin } from "@/lib/supabase/client";
 import type { AssetType } from "@/lib/types";
-import { ASSET_TYPES, FILE_ASSET_TYPES, IMAGE_ASSET_TYPES } from "@/lib/types";
+import { ASSET_TYPES } from "@/lib/types";
 import { buildStoragePath } from "@/lib/supabase/media";
 
 export type ActionResult<T = undefined> =
@@ -170,5 +170,3 @@ export async function deleteAsset(assetId: string): Promise<ActionResult> {
   invalidate();
   return { ok: true };
 }
-
-export { FILE_ASSET_TYPES, IMAGE_ASSET_TYPES };

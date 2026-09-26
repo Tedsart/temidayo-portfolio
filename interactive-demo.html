@@ -1,0 +1,713 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Temidayo Kukoyi — Interactive Design Demo</title>
+<style>
+  :root{
+    --paper:#f6f3ec; --paper2:#efebe1; --paper3:#e7e2d6; --inv:#111210;
+    --ink:#10110f; --ink2:#2e312c; --muted:#6f746c; --faint:#9aa097;
+    --line:#ded8c9; --line2:#c8c1ae; --accent:#1b45f5; --accent2:#1436cc;
+    --pos:#17724a; --warn:#8a5a06; --danger:#a51f1f;
+    --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+  ::selection{background:#c9d4ff}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;cursor:pointer;background:none;border:none;color:inherit}
+  img,svg{display:block;max-width:100%}
+  .wrap{max-width:1280px;margin:0 auto;padding:0 20px}
+  @media(min-width:900px){.wrap{padding:0 40px}}
+  .mono{font-family:var(--mono)}
+  .meta{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+  .idx{font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--faint)}
+  .accent{color:var(--accent)}
+  :focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+
+  /* demo bar */
+  #demobar{position:sticky;top:0;z-index:60;background:var(--accent);color:#fff}
+  #demobar .wrap{display:flex;align-items:center;gap:12px;padding:8px 20px;flex-wrap:wrap}
+  #demobar p{font-family:var(--mono);font-size:11px;letter-spacing:.08em}
+  #demobar .views{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+  #demobar .views button{font-family:var(--mono);font-size:11px;letter-spacing:.1em;padding:5px 10px;border:1px solid rgba(255,255,255,.4);color:#fff}
+  #demobar .views button[aria-current="true"]{background:#fff;color:var(--accent)}
+
+  /* navbar */
+  header.site{position:sticky;top:34px;z-index:50;background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid transparent}
+  header.site .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .wordmark{font-family:var(--mono);font-size:13px;letter-spacing:.16em}
+  .wordmark span{color:var(--muted)}
+  nav.desk{display:none;gap:28px;align-items:center}
+  @media(min-width:820px){nav.desk{display:flex}}
+  nav.desk a{font-size:14px;color:var(--ink2);position:relative;padding:4px 0}
+  nav.desk a:hover{color:var(--ink)}
+  nav.desk a.on::after,nav.desk a:hover::after{content:"";position:absolute;left:0;bottom:-2px;height:1px;width:100%;background:var(--accent)}
+  .talk{border:1px solid rgba(16,17,15,.25);padding:8px 16px;font-size:14px;transition:.2s}
+  .talk:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  #burger{display:inline-flex;width:40px;height:40px;align-items:center;justify-content:center;border:1px solid var(--line)}
+  @media(min-width:820px){#burger{display:none}}
+  #mmenu{display:none;border-top:1px solid var(--line);background:var(--paper)}
+  #mmenu.open{display:block}
+  #mmenu a{display:flex;justify-content:space-between;padding:16px 20px;font-size:24px;font-weight:500;border-bottom:1px solid var(--line)}
+
+  /* hero */
+  .hero{border-bottom:1px solid var(--line)}
+  .hero .wrap{display:grid;gap:56px;padding:64px 20px}
+  @media(min-width:1000px){.hero .wrap{grid-template-columns:1.05fr 1fr;align-items:center;padding:96px 40px}}
+  h1.big{font-size:clamp(44px,8.5vw,88px);line-height:.95;letter-spacing:-.045em;font-weight:600;margin-top:28px}
+  h1.big .hl{position:relative}
+  h1.big .hl::after{content:"";position:absolute;left:0;right:0;bottom:.12em;height:.14em;background:rgba(27,69,245,.25);z-index:-1}
+  .lede{margin-top:28px;font-size:clamp(17px,2vw,20px);line-height:1.6;color:var(--ink2);max-width:34rem}
+  .btnrow{display:flex;gap:12px;flex-wrap:wrap;margin-top:36px}
+  .btn{display:inline-flex;align-items:center;gap:12px;padding:14px 24px;font-size:14px;background:var(--ink);color:var(--paper);transition:.2s}
+  .btn:hover{background:var(--accent)}
+  .btn.ghost{background:none;color:var(--ink);border:1px solid rgba(16,17,15,.25)}
+  .btn.ghost:hover{border-color:var(--ink);background:rgba(16,17,15,.04)}
+  .btn.blue{background:var(--accent);color:#fff}
+  .btn.blue:hover{background:var(--accent2)}
+  .herostats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;border-top:1px solid var(--line);margin-top:48px;padding-top:24px;max-width:28rem}
+  .herostats dt{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+  .herostats dd{margin-top:6px;font-size:14px;color:var(--ink2)}
+  .figcap{display:flex;justify-content:space-between;gap:12px;border-top:1px solid var(--line);margin-top:16px;padding-top:12px;flex-wrap:wrap}
+
+  /* sections */
+  section.blk{padding:80px 0}
+  .shead{border-top:1px solid var(--ink);padding-top:24px;display:flex;flex-wrap:wrap;gap:24px;justify-content:space-between;align-items:flex-end}
+  .shead h2{font-size:clamp(28px,4vw,44px);letter-spacing:-.03em;line-height:1.05;max-width:40rem}
+  .shead p{color:var(--muted);max-width:34rem;line-height:1.6}
+
+  /* project rows */
+  .prow{border-top:1px solid var(--ink);padding:48px 0;display:grid;gap:32px}
+  @media(min-width:1000px){.prow{grid-template-columns:1.25fr 1fr;align-items:center;gap:56px}}
+  .prow.rev{grid-template-columns:1fr 1.25fr}
+  .prow.rev .pmedia{order:2}
+  .pmedia{position:relative;background:var(--paper2);border:1px solid rgba(16,17,15,.1);overflow:hidden}
+  .pmedia .ph{aspect-ratio:16/10}
+  .ptitle{font-size:clamp(26px,3.4vw,40px);letter-spacing:-.035em;line-height:1.05}
+  .ptitle a:hover{color:var(--accent)}
+  .psub{margin-top:12px;font-size:18px;color:var(--ink2)}
+  .pdesc{margin-top:16px;color:var(--muted);line-height:1.6;max-width:34rem}
+  .pmeta{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;border-top:1px solid var(--line);margin-top:28px;padding-top:20px}
+  .pmeta dt{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+  .pmeta dd{margin-top:6px;font-size:14px;color:ink2}
+  .case-link{display:inline-flex;gap:12px;align-items:center;margin-top:28px;font-size:14px;font-weight:500}
+  .case-link .arr{width:32px;height:32px;border:1px solid rgba(16,17,15,.25);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;transition:.25s}
+  .case-link:hover .arr{background:var(--accent);border-color:var(--accent);color:#fff}
+
+  /* placeholder media */
+  .ph{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:
+    linear-gradient(to right,rgba(16,17,15,.05) 1px,transparent 1px) 0 0/48px 48px,
+    linear-gradient(to bottom,rgba(16,17,15,.05) 1px,transparent 1px) 0 0/48px 48px,var(--paper2)}
+  .ph .meta{padding:0 16px;text-align:center}
+  .badge{position:absolute;top:12px;left:12px;background:var(--paper);padding:4px 8px;font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+
+  /* capabilities */
+  .caps{display:grid;gap:40px;margin-top:56px}
+  @media(min-width:900px){.caps{grid-template-columns:repeat(3,1fr)}}
+  .cap{border-top:1px solid var(--ink);padding-top:24px}
+  .cap h3{font-size:24px;text-transform:uppercase;letter-spacing:.02em;margin-top:20px}
+  .cap p{margin-top:16px;color:var(--muted);line-height:1.6}
+  .cap li{display:flex;gap:12px;align-items:baseline;font-size:14px;color:var(--ink2);margin-top:8px;list-style:none}
+  .cap li::before{content:"";width:16px;height:1px;background:var(--line2)}
+
+  /* process */
+  .proc{background:var(--paper2);border-block:1px solid var(--line)}
+  .steps{margin-top:56px;position:relative;padding-left:0}
+  .steps::before{content:"";position:absolute;left:13px;top:8px;bottom:8px;width:1px;background:var(--line2)}
+  .step{position:relative;display:grid;gap:12px;padding-left:44px;margin-bottom:40px}
+  @media(min-width:900px){.step{grid-template-columns:140px 1fr;gap:40px}}
+  .step .n{position:absolute;left:0;top:6px;width:28px;height:28px;border:1px solid var(--line2);border-radius:50%;background:var(--paper);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;color:var(--muted)}
+  .step h3{font-size:22px}
+  .step p{color:var(--muted);line-height:1.6;max-width:36rem}
+
+  /* about */
+  .about{display:grid;gap:48px}
+  @media(min-width:1000px){.about{grid-template-columns:.85fr 1.15fr;gap:64px}}
+  .portrait{border:1px solid var(--line);background:var(--paper2);aspect-ratio:4/5;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+  .portrait .tk{font-family:var(--mono);font-size:48px;color:var(--line2)}
+  .prose{color:var(--ink2);font-size:17px;line-height:1.75;max-width:36rem}
+  .prose p+p{margin-top:1.1em}
+
+  /* contact */
+  .contact{background:var(--inv);color:var(--paper)}
+  .contact h2{font-size:clamp(32px,5.5vw,60px);letter-spacing:-.04em;line-height:1.02;max-width:44rem}
+  .contact .sub{margin-top:24px;color:rgba(246,243,236,.65);font-size:18px;line-height:1.6;max-width:32rem}
+  .contact .btn{background:var(--paper);color:var(--ink);margin-top:36px}
+  .contact .btn:hover{background:var(--accent);color:#fff}
+  .chrow{display:flex;justify-content:space-between;gap:24px;padding:20px 0;border-bottom:1px solid rgba(246,243,236,.15)}
+  .chrow dt{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,243,236,.45)}
+  .chrow dd{font-size:14px;color:rgba(246,243,236,.85)}
+
+  footer.site{background:var(--inv);color:var(--paper);border-top:1px solid rgba(246,243,236,.15)}
+  footer.site .wrap{padding:56px 20px;display:grid;gap:40px}
+  @media(min-width:900px){footer.site .wrap{grid-template-columns:1.4fr 1fr 1fr;padding:64px 40px}}
+  footer .meta{color:rgba(246,243,236,.4)}
+  footer li{list-style:none;margin-top:8px;font-size:14px;color:rgba(246,243,236,.8)}
+
+  /* case study */
+  .cshead{border-bottom:1px solid var(--line);padding:72px 0}
+  .cshead h1{font-size:clamp(36px,6.5vw,72px);letter-spacing:-.04em;line-height:1;margin-top:28px;max-width:56rem}
+  .tags{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+  .tag{border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .tag.acc{border-color:rgba(27,69,245,.3);background:#e8ecff;color:var(--accent)}
+  .story{border-top:1px solid var(--line)}
+  .story .wrap{display:grid;gap:32px;padding:56px 20px}
+  @media(min-width:900px){.story .wrap{grid-template-columns:220px 1fr;gap:56px}}
+  .story h2{font-size:20px}
+  .q{font-size:clamp(20px,2.6vw,28px);font-weight:500;line-height:1.35;max-width:48rem}
+  .obj{margin-top:32px;border-left:2px solid var(--accent);background:rgba(232,236,255,.5);padding:20px 24px}
+  .findings{display:grid;gap:1px;background:var(--line);border:1px solid var(--line)}
+  @media(min-width:900px){.findings{grid-template-columns:repeat(3,1fr)}}
+  .find{background:var(--paper);padding:36px}
+  .find .num{font-size:clamp(36px,4.5vw,56px);font-weight:600;letter-spacing:-.04em;margin-top:20px}
+  .find h3{margin-top:16px;font-size:16px}
+  .find p{margin-top:12px;font-size:14px;color:var(--muted);line-height:1.6}
+  .pipe{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+  .pipe span{border:1px solid var(--line);padding:8px 16px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink2)}
+  .pipe span:first-child{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .pipe i{color:var(--faint);font-style:normal}
+
+  /* carousel */
+  .car{border:1px solid var(--line);background:var(--inv);position:relative;overflow:hidden}
+  .car .frame{aspect-ratio:16/9;position:relative}
+  .car .page{position:absolute;inset:0;opacity:0;transition:opacity .35s ease;pointer-events:none}
+  .car .page.on{opacity:1;pointer-events:auto}
+  .car .hud{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;padding:16px 20px;background:linear-gradient(to top,rgba(17,18,16,.8),transparent);color:rgba(246,243,236,.8);font-family:var(--mono);font-size:11px;letter-spacing:.16em}
+  .carctl{display:flex;align-items:center;justify-content:space-between;gap:16px;border-top:1px solid var(--line);margin-top:16px;padding-top:16px}
+  .carctl button{width:44px;height:44px;border:1px solid rgba(16,17,15,.25);border-radius:50%;transition:.2s}
+  .carctl button:hover:not(:disabled){background:var(--ink);color:var(--paper)}
+  .carctl button:disabled{opacity:.35;cursor:not-allowed}
+  .dots{display:flex;gap:8px}
+  .dots i{height:4px;width:12px;background:var(--line2);transition:.3s}
+  .dots i.on{width:32px;background:var(--accent)}
+
+  /* docs */
+  .doc{display:flex;align-items:center;gap:16px;flex-wrap:wrap;border:1px solid var(--line);background:var(--paper);padding:16px 20px}
+  .doc+.doc{border-top:none}
+  .kind{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;padding:4px 8px;min-width:48px;text-align:center}
+  .kind.pdf{background:rgba(165,31,31,.08);color:var(--danger)}
+  .kind.csv{background:rgba(23,114,74,.1);color:var(--pos)}
+  .doc .grow{flex:1;min-width:200px}
+  .doc .grow p{font-size:14px;font-weight:500}
+  .doc .grow small{color:var(--muted)}
+  .mini{border:1px solid rgba(16,17,15,.25);padding:8px 16px;font-size:12px;transition:.2s}
+  .mini:hover{background:var(--ink);color:var(--paper)}
+  .mini.acc{border-color:rgba(27,69,245,.4);background:#e8ecff;color:var(--accent)}
+  .mini.acc:hover{background:var(--accent);color:#fff}
+
+  /* admin */
+  .adm{background:var(--paper2);min-height:100vh}
+  .adm header{background:rgba(246,243,236,.9);border-bottom:1px solid var(--line);position:sticky;top:34px;z-index:40}
+  .adm header .wrap{display:flex;align-items:center;justify-content:space-between;height:56px}
+  .adm .cols{display:grid;gap:32px;padding:32px 20px}
+  @media(min-width:1000px){.adm .cols{grid-template-columns:200px 1fr;padding:32px 40px}}
+  .adm nav{display:flex;gap:8px;flex-wrap:wrap}
+  @media(min-width:1000px){.adm nav{flex-direction:column}}
+  .adm nav button{padding:10px 16px;font-size:14px;border:1px solid var(--line);background:var(--paper);text-align:left}
+  .adm nav button.on{background:var(--ink);color:var(--paper);font-weight:500}
+  .statgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+  @media(min-width:900px){.statgrid{grid-template-columns:repeat(4,1fr)}}
+  .stat{background:var(--paper);padding:24px}
+  .stat b{display:block;font-size:36px;font-weight:600;margin-top:12px}
+  .rowline{display:flex;align-items:center;gap:16px;flex-wrap:wrap;background:var(--paper);border:1px solid var(--line);padding:16px 20px}
+  .rowline+.rowline{border-top:none}
+  .status{display:inline-flex;align-items:center;gap:8px;border-radius:999px;border:1px solid;padding:4px 10px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase}
+  .status.pub{border-color:rgba(23,114,74,.3);color:var(--pos)}
+  .status.draft{border-color:rgba(138,90,6,.3);color:var(--warn)}
+  .status i{width:6px;height:6px;border-radius:50%;background:currentColor}
+  .field{margin-bottom:20px}
+  .field label{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+  .field input,.field textarea,.field select{width:100%;border:1px solid var(--line);background:var(--paper);padding:10px 12px;font:inherit;font-size:14px}
+  .field input:focus,.field textarea:focus{outline:none;border-color:var(--ink)}
+  .panel{background:var(--paper);border:1px solid var(--line);padding:24px;margin-top:24px}
+  .panel h3{font-size:16px;margin-bottom:16px}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:var(--paper);padding:12px 20px;font-size:14px;transition:.35s ease;z-index:99;opacity:0}
+  .toast.on{transform:translateX(-50%) translateY(0);opacity:1}
+
+  [data-view]{display:none}
+  [data-view].on{display:block}
+</style>
+</head>
+<body>
+
+<div id="demobar">
+  <div class="wrap">
+    <p>INTERACTIVE DESIGN DEMO — sample data only. The real app adds Supabase, uploads &amp; auth.</p>
+    <div class="views" role="tablist" aria-label="Demo views">
+      <button data-goto="home" aria-current="true">HOME</button>
+      <button data-goto="work">WORK</button>
+      <button data-goto="case">CASE STUDY</button>
+      <button data-goto="about">ABOUT</button>
+      <button data-goto="contact">CONTACT</button>
+      <button data-goto="admin">ADMIN CMS</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ HOME ═══════════ -->
+<div data-view="home" class="on">
+  <header class="site"><div class="wrap">
+    <span class="wordmark">TEMIDAYO <span>KUKOYI</span></span>
+    <nav class="desk" aria-label="Primary">
+      <a href="#" data-goto="work">Work</a><a href="#" data-goto="about">About</a><a href="#" data-goto="contact">Contact</a>
+      <a href="#" data-goto="contact" class="talk">Let's talk ↗</a>
+    </nav>
+    <button id="burger" aria-label="Open menu" aria-expanded="false">☰</button>
+  </div>
+  <div id="mmenu"><a href="#" data-goto="work">Work <span class="idx">01</span></a><a href="#" data-goto="about">About <span class="idx">02</span></a><a href="#" data-goto="contact">Contact <span class="idx">03</span></a></div>
+  </header>
+
+  <section class="hero"><div class="wrap">
+    <div>
+      <p class="meta" style="color:var(--ink2)">●&nbsp; DATA ANALYST · DATA VISUALIZATION · DATA STORYTELLING</p>
+      <h1 class="big">Data that<br>makes <span class="hl">sense.</span></h1>
+      <p class="lede">I turn data into insights, visualizations and stories people can understand.</p>
+      <div class="btnrow">
+        <button class="btn" data-goto="work">Explore my work →</button>
+        <button class="btn ghost" data-goto="contact">Let's connect</button>
+      </div>
+      <dl class="herostats">
+        <div><dt>Focus</dt><dd>Dashboards &amp; reports</dd></div>
+        <div><dt>Method</dt><dd>Question first</dd></div>
+        <div><dt>Available</dt><dd>For analysis work</dd></div>
+      </dl>
+    </div>
+    <div>
+      <svg viewBox="0 0 720 520" role="img" aria-label="Scatter with fitted trend line">
+        <rect width="720" height="520" fill="#0d0e0c"/>
+        <g stroke="#fff" stroke-opacity=".07">
+          <path d="M64 32v424M228 32v424M392 32v424M556 32v424M672 32v424"/>
+          <path d="M64 40h608M64 146h608M64 252h608M64 358h608M64 456h608"/>
+        </g>
+        <g stroke="#fff" stroke-opacity=".28"><path d="M64 456h608M64 32v424"/></g>
+        <g fill="#f6f3ec" fill-opacity=".5">
+          <circle cx="90" cy="410" r="3"/><circle cx="120" cy="400" r="3"/><circle cx="150" cy="430" r="3"/><circle cx="180" cy="445" r="3"/><circle cx="210" cy="390" r="3"/><circle cx="240" cy="370" r="3"/><circle cx="270" cy="420" r="3"/><circle cx="300" cy="350" r="3"/><circle cx="330" cy="330" r="3"/><circle cx="360" cy="300" r="3"/><circle cx="390" cy="320" r="3"/><circle cx="420" cy="280" r="3"/><circle cx="450" cy="260" r="3"/><circle cx="480" cy="300" r="3"/><circle cx="510" cy="240" r="3"/><circle cx="540" cy="210" r="3"/><circle cx="570" cy="250" r="3"/><circle cx="600" cy="180" r="3"/><circle cx="630" cy="160" r="3"/><circle cx="660" cy="200" r="3"/>
+        </g>
+        <path d="M64 444 L672 78" stroke="#1b45f5" stroke-width="2">
+          <animate attributeName="stroke-dasharray" from="0 900" to="900 900" dur="1.6s" fill="freeze"/>
+        </path>
+        <circle cx="540" cy="210" r="4.5" fill="#1b45f5"/><circle cx="540" cy="210" r="11" fill="none" stroke="#1b45f5"/>
+        <line x1="540" y1="210" x2="540" y2="156" stroke="#f6f3ec" stroke-opacity=".3"/>
+        <rect x="478" y="122" width="124" height="30" fill="#f6f3ec"/>
+        <text x="540" y="142" text-anchor="middle" font-family="monospace" font-size="11" letter-spacing="2" fill="#10110f">THE PATTERN</text>
+      </svg>
+      <div class="figcap"><span class="meta">Fig. 01 — Data → Insight</span><span class="meta" style="color:var(--faint)">34 observations · 1 fitted line</span></div>
+    </div>
+  </div></section>
+
+  <section class="blk"><div class="wrap">
+    <div class="shead"><div><p class="idx">01 — SELECTED WORK</p><h2>Work that turned data into a decision.</h2></div>
+    <p>Each case study walks through the question, the data, the analysis and what it changed.</p></div>
+    <div style="margin-top:56px">
+      <article class="prow">
+        <button class="pmedia" data-goto="case" aria-label="Open Nigeria Inflation Dashboard case study">
+          <div class="ph"><svg width="44" height="30" viewBox="0 0 44 30"><path d="M1 29h42" stroke="#c8c1ae"/><rect x="5" y="16" width="5" height="13" fill="#c8c1ae" opacity=".5"/><rect x="14" y="10" width="5" height="19" fill="#c8c1ae" opacity=".65"/><rect x="23" y="19" width="5" height="10" fill="#c8c1ae" opacity=".5"/><rect x="32" y="5" width="5" height="24" fill="#c8c1ae" opacity=".8"/></svg><p class="meta">[Thumbnail — upload in CMS]</p></div>
+          <span class="badge">Sample media</span>
+        </button>
+        <div>
+          <div style="display:flex;align-items:baseline;gap:16px"><span class="idx">01</span><span style="flex:1;height:1px;background:var(--line)"></span><span class="mono accent" style="font-size:10px;letter-spacing:.16em;text-transform:uppercase">Featured</span></div>
+          <h3 class="ptitle"><a href="#" data-goto="case">Nigeria Inflation Dashboard</a></h3>
+          <p class="psub">Reading a year of price change, month by month</p>
+          <p class="pdesc">A dashboard and visual report that turns Nigeria's monthly inflation series into a story about what is actually getting more expensive.</p>
+          <dl class="pmeta"><div><dt>Category</dt><dd>Economic analysis</dd></div><div><dt>Date</dt><dd>[Date]</dd></div><div><dt>Tools</dt><dd>Power BI · SQL · Excel</dd></div></dl>
+          <button class="case-link" data-goto="case">View case study <span class="arr">→</span></button>
+        </div>
+      </article>
+      <article class="prow rev">
+        <div class="pmedia"><div class="ph" style="aspect-ratio:4/3"><p class="meta">[Second project thumbnail]</p></div><span class="badge">Sample media</span></div>
+        <div>
+          <div style="display:flex;align-items:baseline;gap:16px"><span class="idx">02</span><span style="flex:1;height:1px;background:var(--line)"></span></div>
+          <h3 class="ptitle">[Second project title]</h3>
+          <p class="pdesc">Two-sentence summary that appears on the work index. Keep it concrete: what was analysed and what came out of it.</p>
+          <dl class="pmeta"><div><dt>Category</dt><dd>[Category]</dd></div><div><dt>Date</dt><dd>[Date]</dd></div><div><dt>Tools</dt><dd>[Tool]</dd></div></dl>
+        </div>
+      </article>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);margin-top:48px;padding-top:32px;flex-wrap:wrap;gap:16px">
+      <p style="color:var(--muted);font-size:14px;max-width:28rem">Every project here is stored in the database — nothing on this page is hard-coded.</p>
+      <button class="case-link" data-goto="work">All work <span class="arr">→</span></button>
+    </div>
+  </div></section>
+
+  <section class="blk" style="padding-top:0"><div class="wrap">
+    <div class="shead"><div><p class="idx">02 — WHAT I DO</p><h2>Three things, done properly.</h2></div></div>
+    <div class="caps">
+      <div class="cap"><p class="idx">01</p><h3>Analyze</h3><p>Turn raw data into useful evidence through statistical thinking, exploration and analysis.</p><ul><li>Exploratory analysis</li><li>Data quality &amp; cleaning</li><li>Statistical testing</li></ul></div>
+      <div class="cap"><p class="idx">02</p><h3>Visualize</h3><p>Build dashboards and visualizations that reveal patterns instead of simply displaying numbers.</p><ul><li>Dashboard design</li><li>Visual hierarchy</li><li>Interaction &amp; filters</li></ul></div>
+      <div class="cap"><p class="idx">03</p><h3>Communicate</h3><p>Turn findings into clear stories, reports and presentations people can understand.</p><ul><li>Narrative structure</li><li>Executive reporting</li><li>Presentation design</li></ul></div>
+    </div>
+  </div></section>
+
+  <section class="blk proc"><div class="wrap">
+    <div class="shead"><div><p class="idx">03 — HOW I THINK</p><h2>Understand → Explore → Analyze → Visualize → Communicate</h2></div></div>
+    <div class="steps">
+      <div class="step"><span class="n">01</span><h3>Understand</h3><p>Start with the question, not the data. Who is asking, what decision hangs on the answer.</p></div>
+      <div class="step"><span class="n">02</span><h3>Explore</h3><p>Profile the dataset. Check quality, distributions, gaps and outliers before any number is trusted.</p></div>
+      <div class="step"><span class="n">03</span><h3>Analyze</h3><p>Test the relationships that matter. Keep the method simple enough to defend.</p></div>
+      <div class="step"><span class="n">04</span><h3>Visualize</h3><p>Design charts that reveal a pattern at a glance, readable on any screen.</p></div>
+      <div class="step"><span class="n">05</span><h3>Communicate</h3><p>Close with the finding, the evidence and the recommendation.</p></div>
+    </div>
+  </div></section>
+
+  <section class="blk"><div class="wrap">
+    <div class="shead"><div><p class="idx">04 — ABOUT</p><h2>The analyst behind the work.</h2></div></div>
+    <div class="about" style="margin-top:56px">
+      <div><div class="portrait"><span class="tk">TK</span><span class="meta" style="color:var(--faint)">Profile photo not uploaded<br>Admin → Media</span></div>
+      <div class="figcap" style="border-top:1px solid var(--line)"><span class="meta">Temidayo Kukoyi</span><span class="meta" style="color:var(--faint)">Lagos, NG</span></div></div>
+      <div>
+        <h3 style="font-size:clamp(24px,3vw,36px);letter-spacing:-.03em">I work with data the way an editor works with a story.</h3>
+        <div class="prose" style="margin-top:24px">
+          <p>[Short introduction goes here — replace in the CMS.]</p>
+          <p>Most of my work sits between the spreadsheet and the decision. I take a dataset that is messy, wide or simply unreadable, work out what it is actually saying, and build the dashboard, report or visual that makes the answer obvious.</p>
+        </div>
+        <button class="case-link" data-goto="about">Read the full story <span class="arr">→</span></button>
+      </div>
+    </div>
+  </div></section>
+
+  <section class="blk contact"><div class="wrap" style="display:grid;gap:48px">
+    <div><p class="idx" style="color:rgba(246,243,236,.4)">CONTACT</p>
+    <h2 style="margin-top:24px">Have a question worth answering with data?</h2>
+    <p class="sub">Send the dataset, the question or the half-formed idea — I will tell you honestly what the data can support.</p>
+    <button class="btn" data-goto="contact">Let's talk ↗</button></div>
+  </div></section>
+
+  <footer class="site"><div class="wrap">
+    <div><p class="wordmark">TEMIDAYO KUKOYI</p><p style="margin-top:16px;font-size:14px;color:rgba(246,243,236,.6);max-width:20rem">Data Analyst · Data Visualization · Data Storytelling</p></div>
+    <div><p class="meta">Navigate</p><ul><li>Work</li><li>About</li><li>Contact</li></ul></div>
+    <div><p class="meta">Elsewhere</p><ul><li>LinkedIn</li><li>GitHub</li><li>Email</li></ul></div>
+  </div>
+  <div class="wrap" style="padding-top:0"><p class="meta" style="border-top:1px solid rgba(246,243,236,.15);padding-top:24px">© 2026 Temidayo Kukoyi · Built with Next.js · Supabase</p></div></footer>
+</div>
+
+<!-- ═══════════ WORK ═══════════ -->
+<div data-view="work">
+  <header class="site"><div class="wrap"><span class="wordmark">TEMIDAYO <span>KUKOYI</span></span>
+  <nav class="desk"><a href="#" data-goto="work" class="on">Work</a><a href="#" data-goto="about">About</a><a href="#" data-goto="contact">Contact</a><a href="#" data-goto="contact" class="talk">Let's talk ↗</a></nav></div></header>
+  <section class="blk"><div class="wrap">
+    <div class="shead"><div><p class="idx">INDEX — ALL WORK</p><h2>Every published project, in full.</h2></div>
+    <p>Case studies, dashboards and visual reports. Each one follows the same discipline.</p></div>
+    <div style="margin-top:56px">
+      <article class="prow">
+        <button class="pmedia" data-goto="case"><div class="ph"><p class="meta">[Thumbnail]</p></div><span class="badge">Sample media</span></button>
+        <div><h3 class="ptitle"><a href="#" data-goto="case">Nigeria Inflation Dashboard</a></h3>
+        <p class="pdesc">A dashboard and visual report that turns Nigeria's monthly inflation series into a story about what is actually getting more expensive.</p>
+        <dl class="pmeta"><div><dt>Category</dt><dd>Economic analysis</dd></div><div><dt>Date</dt><dd>[Date]</dd></div><div><dt>Tools</dt><dd>Power BI · SQL · Excel</dd></div></dl>
+        <button class="case-link" data-goto="case">View case study <span class="arr">→</span></button></div>
+      </article>
+      <article class="prow rev"><div class="pmedia"><div class="ph" style="aspect-ratio:4/3"><p class="meta">[Thumbnail]</p></div></div>
+        <div><h3 class="ptitle">[Second project title]</h3><p class="pdesc">Two-sentence summary for the work index.</p>
+        <dl class="pmeta"><div><dt>Category</dt><dd>[Category]</dd></div><div><dt>Date</dt><dd>[Date]</dd></div><div><dt>Tools</dt><dd>[Tool]</dd></div></dl></div></article>
+      <article class="prow"><div class="pmedia"><div class="ph" style="aspect-ratio:4/3"><p class="meta">[Thumbnail]</p></div></div>
+        <div><h3 class="ptitle">[Third project title]</h3><p class="pdesc">Two-sentence summary for the work index.</p>
+        <dl class="pmeta"><div><dt>Category</dt><dd>[Category]</dd></div><div><dt>Date</dt><dd>[Date]</dd></div><div><dt>Tools</dt><dd>[Tool]</dd></div></dl></div></article>
+    </div>
+  </div></section>
+</div>
+
+<!-- ═══════════ CASE STUDY ═══════════ -->
+<div data-view="case">
+  <header class="site"><div class="wrap"><span class="wordmark">TEMIDAYO <span>KUKOYI</span></span>
+  <nav class="desk"><a href="#" data-goto="work" class="on">Work</a><a href="#" data-goto="about">About</a><a href="#" data-goto="contact">Contact</a><a href="#" data-goto="contact" class="talk">Let's talk ↗</a></nav></div></header>
+
+  <div class="cshead"><div class="wrap">
+    <div class="tags"><span class="meta">[Project date]</span><span class="tag">Economic analysis</span><span class="tag acc">Featured</span></div>
+    <h1>Nigeria Inflation Dashboard</h1>
+    <p class="psub" style="max-width:40rem">Reading a year of price change, month by month</p>
+    <p class="pdesc">A dashboard and visual report that turns Nigeria's monthly inflation series into a story about what is actually getting more expensive.</p>
+    <dl class="pmeta" style="max-width:40rem"><div><dt>Tools</dt><dd>Power BI · SQL · Excel</dd></div><div><dt>Skills</dt><dd>Time-series analysis · Dashboard design · Data storytelling</dd></div></dl>
+  </div></div>
+
+  <div class="wrap" style="padding:48px 20px">
+    <div class="ph" style="aspect-ratio:16/9;border:1px solid var(--line)"><p class="meta">Hero image not uploaded yet</p></div>
+  </div>
+
+  <section class="story"><div class="wrap"><div><p class="idx">01</p><h2>The Question</h2></div>
+    <div><p class="q">[What is the question this project answered? Example: which categories drove headline inflation over the period, and how unevenly did households feel it?]</p>
+    <div class="obj"><p class="meta accent">Objective</p><p style="margin-top:8px;color:var(--ink2);line-height:1.6">[State the objective — one page, defensible read on direction and drivers.]</p></div></div>
+  </div></section>
+
+  <section class="story"><div class="wrap"><div><p class="idx">02</p><h2>The Data</h2></div>
+    <dl class="pmeta" style="border:none;padding:0;margin:0"><div><dt>Dataset</dt><dd style="line-height:1.6">[Describe the dataset: grain, coverage, rows, refresh cadence.]</dd></div><div><dt>Data sources</dt><dd style="line-height:1.6">[List the official releases used.]</dd></div><div><dt>Period</dt><dd>[Project date]</dd></div></dl>
+  </div></section>
+
+  <section class="story"><div class="wrap"><div><p class="idx">03</p><h2>The Approach</h2></div>
+    <div><div class="pipe"><span>Source</span><i>→</i><span>Clean</span><i>→</i><span>Analyze</span><i>→</i><span>Visualize</span><i>→</i><span>Communicate</span></div>
+    <p class="prose" style="margin-top:32px;font-size:15px">[Methodology and analysis process go here — the decisions made, and what was rejected.]</p></div>
+  </div></section>
+
+  <section class="story"><div class="wrap"><div><p class="idx">04</p><h2>Key Findings</h2></div>
+    <div class="findings">
+      <div class="find"><p class="idx">Finding 01</p><p class="num">[00.0%]</p><h3>[Finding one headline]</h3><p>[One or two sentences of plain explanation for a non-technical reader.]</p></div>
+      <div class="find"><p class="idx">Finding 02</p><p class="num">[0.0×]</p><h3>[Finding two headline]</h3><p>[One or two sentences of plain explanation for a non-technical reader.]</p></div>
+      <div class="find"><p class="idx">Finding 03</p><p class="num">[00]</p><h3>[Finding three headline]</h3><p>[One or two sentences of plain explanation for a non-technical reader.]</p></div>
+    </div>
+  </div></section>
+
+  <section class="story"><div class="wrap"><div><p class="idx">05</p><h2>Dashboard Gallery</h2></div>
+    <div style="display:grid;gap:48px">
+      <div><div class="ph" style="aspect-ratio:16/10;border:1px solid var(--line)"><p class="meta">Screenshot not uploaded yet</p></div><p style="margin-top:12px;font-size:14px;color:var(--muted)">[Caption for this screen]</p></div>
+      <div><div class="ph" style="aspect-ratio:16/10;border:1px solid var(--line)"><p class="meta">Screenshot not uploaded yet</p></div></div>
+    </div>
+  </div></section>
+
+  <section class="story"><div class="wrap"><div><p class="idx">06</p><h2>Visual Report</h2></div>
+    <div>
+      <div class="car" role="region" aria-roledescription="carousel" aria-label="Visual report pages" tabindex="0" id="car">
+        <div class="frame">
+          <div class="page on" data-p="0"><svg viewBox="0 0 1600 900"><rect width="1600" height="900" fill="#101418"/><text x="80" y="120" font-family="monospace" font-size="28" letter-spacing="6" fill="#8b93a1">NIGERIA INFLATION — VISUAL REPORT</text><text x="80" y="220" font-family="sans-serif" font-size="72" font-weight="700" fill="#f6f3ec">Page 01 — Headline trend</text><path d="M80 700 L400 620 L720 660 L1040 420 L1360 470 L1520 260" stroke="#1b45f5" stroke-width="8" fill="none"/><g fill="#f6f3ec" opacity=".6"><circle cx="240" cy="660" r="8"/><circle cx="560" cy="640" r="8"/><circle cx="880" cy="520" r="8"/><circle cx="1200" cy="440" r="8"/></g></svg></div>
+          <div class="page" data-p="1"><svg viewBox="0 0 1600 900"><rect width="1600" height="900" fill="#101418"/><text x="80" y="220" font-family="sans-serif" font-size="72" font-weight="700" fill="#f6f3ec">Page 02 — Category drivers</text><g fill="#1b45f5"><rect x="120" y="380" width="180" height="340"/><rect x="380" y="480" width="180" height="240" opacity=".8"/><rect x="640" y="560" width="180" height="160" opacity=".6"/><rect x="900" y="620" width="180" height="100" opacity=".45"/></g><g fill="#8b93a1" font-family="monospace" font-size="24"><text x="120" y="760">FOOD</text><text x="380" y="760">HOUSING</text><text x="640" y="760">TRANSPORT</text><text x="900" y="760">OTHER</text></g></svg></div>
+          <div class="page" data-p="2"><svg viewBox="0 0 1600 900"><rect width="1600" height="900" fill="#f6f3ec"/><text x="80" y="220" font-family="sans-serif" font-size="72" font-weight="700" fill="#10110f">Page 03 — Takeaways</text><g font-family="sans-serif" font-size="34" fill="#2e312c"><text x="80" y="360">1. The trend is real, not seasonal.</text><text x="80" y="440">2. One category drives most of the change.</text><text x="80" y="520">3. The dashboard makes both visible in one view.</text></g><rect x="80" y="620" width="420" height="8" fill="#1b45f5"/></svg></div>
+        </div>
+        <div class="hud"><span id="carcap">[Visual report page 01]</span><span id="carcount" aria-live="polite">01 / 03</span></div>
+      </div>
+      <div class="carctl">
+        <button id="carprev" aria-label="Previous report page">←</button>
+        <div class="dots" aria-hidden="true"><i class="on"></i><i></i><i></i></div>
+        <button id="carnext" aria-label="Next report page">→</button>
+      </div>
+    </div>
+  </div></section>
+
+  <section class="story"><div class="wrap"><div><p class="idx">07</p><h2>Documents &amp; Datasets</h2></div>
+    <div>
+      <div class="doc"><span class="kind pdf">PDF</span><div class="grow"><p>[visual-report.pdf]</p><small>Full visual report</small></div><button class="mini" data-toast="In the live CMS this opens the uploaded PDF.">View</button><button class="mini acc" data-toast="Downloads the file in the live site.">Download</button></div>
+      <div class="doc"><span class="kind csv">CSV</span><div class="grow"><p>[cleaned-dataset.csv]</p><small>Cleaned monthly series</small></div><button class="mini" data-toast="In the live CMS this opens the uploaded CSV.">View</button><button class="mini acc" data-toast="Downloads the file in the live site.">Download</button></div>
+    </div>
+  </div></section>
+
+  <section class="story" style="border-top:1px solid var(--ink)"><div class="wrap" style="grid-template-columns:auto 1fr auto;align-items:center">
+    <p class="meta">Next project</p><h2 style="font-size:clamp(28px,4.5vw,48px);letter-spacing:-.03em">[Second project title]</h2>
+    <span class="arr" style="width:48px;height:48px;border:1px solid rgba(16,17,15,.25);border-radius:50%;display:inline-flex;align-items:center;justify-content:center">→</span>
+  </div></section>
+</div>
+
+<!-- ═══════════ ABOUT ═══════════ -->
+<div data-view="about">
+  <header class="site"><div class="wrap"><span class="wordmark">TEMIDAYO <span>KUKOYI</span></span>
+  <nav class="desk"><a href="#" data-goto="work">Work</a><a href="#" data-goto="about" class="on">About</a><a href="#" data-goto="contact">Contact</a><a href="#" data-goto="contact" class="talk">Let's talk ↗</a></nav></div></header>
+  <section class="blk"><div class="wrap">
+    <div class="shead"><div><p class="idx">ABOUT</p><h2>Data, treated like an editorial craft.</h2></div></div>
+    <div class="about" style="margin-top:56px">
+      <div><div class="portrait"><span class="tk">TK</span><span class="meta" style="color:var(--faint)">Profile photo not uploaded</span></div></div>
+      <div>
+        <div class="prose"><p>[Your intro — replace in the CMS.]</p><p>My background is in statistics, which shapes how I work: I care about what a number can and cannot support, and I would rather give a precise small answer than an impressive wrong one.</p><p>Day to day that means cleaning messy datasets, checking assumptions, building dashboards that people actually open, and writing the summary that turns a chart into a decision.</p></div>
+        <dl class="pmeta" style="margin-top:40px;grid-template-columns:1fr 1fr"><div><dt>Statistics background</dt><dd>[Your education — replace.]</dd></div><div><dt>Experience</dt><dd>[Real entries only.]</dd></div><div><dt>Interests</dt><dd>[What you read and build.]</dd></div><div><dt>AI-assisted analytics</dt><dd>AI speeds up cleaning and exploration — the judgement stays human.</dd></div></dl>
+        <div style="margin-top:40px"><p class="meta">Tools I reach for</p><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><span class="tag">Power BI</span><span class="tag">SQL</span><span class="tag">Excel</span><span class="tag">Python</span><span class="tag">Looker Studio</span><span class="tag">Report design</span></div></div>
+      </div>
+    </div>
+  </div></section>
+</div>
+
+<!-- ═══════════ CONTACT ═══════════ -->
+<div data-view="contact">
+  <header class="site"><div class="wrap"><span class="wordmark">TEMIDAYO <span>KUKOYI</span></span>
+  <nav class="desk"><a href="#" data-goto="work">Work</a><a href="#" data-goto="about">About</a><a href="#" data-goto="contact" class="on">Contact</a><a href="#" data-goto="contact" class="talk">Let's talk ↗</a></nav></div></header>
+  <section class="blk"><div class="wrap">
+    <div class="shead"><div><p class="idx">CONTACT</p><h2>Have a question worth answering with data?</h2></div></div>
+    <div style="display:grid;gap:56px;margin-top:56px;grid-template-columns:1fr}">
+      <form id="cform" novalidate style="max-width:36rem">
+        <div class="field"><label for="cn">Your name</label><input id="cn" required placeholder="Adaeze Okafor"></div>
+        <div class="field"><label for="ce">Your email</label><input id="ce" type="email" required placeholder="you@example.com"></div>
+        <div class="field"><label for="cm">Your question</label><textarea id="cm" rows="6" required placeholder="We have 18 months of sales data and no idea what is driving the Q3 dip…"></textarea></div>
+        <button class="btn" type="submit">Let's talk</button>
+        <p style="margin-top:12px;font-size:12px;color:var(--muted)">On the live site this opens a pre-filled email in your own mail app — nothing is stored.</p>
+      </form>
+    </div>
+  </div></section>
+</div>
+
+<!-- ═══════════ ADMIN ═══════════ -->
+<div data-view="admin" class="adm">
+  <header><div class="wrap"><span class="wordmark">TEMIDAYO KUKOYI <span class="accent">/ CMS</span></span>
+  <span style="font-size:12px;color:var(--muted)"><span id="admemail">you@example.com</span> · <button data-goto="home" style="text-decoration:underline">View site</button> · <button style="text-decoration:underline" data-toast="Signed out (demo).">Log out</button></span></div></header>
+  <div class="cols">
+    <nav aria-label="CMS"><button class="on" data-adm="dash">Dashboard</button><button data-adm="proj">Projects</button><button data-adm="media">Media</button></nav>
+    <div>
+      <div data-admview="dash">
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap">
+          <div><p class="idx">DASHBOARD</p><h1 style="font-size:30px;letter-spacing:-.03em;margin-top:8px">Content overview</h1></div>
+          <button class="btn blue" data-adm="new">Create new project</button>
+        </div>
+        <dl class="statgrid" style="margin-top:32px">
+          <div class="stat"><dt class="meta">Total projects</dt><b>4</b></div>
+          <div class="stat"><dt class="meta">Published</dt><b>3</b></div>
+          <div class="stat"><dt class="meta">Drafts</dt><b>1</b></div>
+          <div class="stat"><dt class="meta">Featured</dt><b>2</b></div>
+        </dl>
+        <div style="margin-top:40px"><h2 style="font-size:18px;border-top:1px solid var(--ink);padding-top:16px">Recently updated</h2>
+        <div style="margin-top:16px">
+          <div class="rowline"><span style="flex:1"><b style="font-weight:500">Nigeria Inflation Dashboard</b><br><small style="color:var(--muted)">Updated 2 days ago · /work/nigeria-inflation-dashboard</small></span><span class="status pub"><i></i>Published</span></div>
+          <div class="rowline"><span style="flex:1"><b style="font-weight:500">[Second project title]</b><br><small style="color:var(--muted)">Updated 5 days ago</small></span><span class="status pub"><i></i>Published</span></div>
+          <div class="rowline"><span style="flex:1"><b style="font-weight:500">[Draft project — not visible publicly]</b><br><small style="color:var(--muted)">Updated today</small></span><span class="status draft"><i></i>Draft</span></div>
+        </div></div>
+      </div>
+
+      <div data-admview="proj" hidden>
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap">
+          <div><p class="idx">PROJECTS</p><h1 style="font-size:30px;letter-spacing:-.03em;margin-top:8px">All projects</h1></div>
+          <button class="btn blue" data-adm="new">Create new project</button>
+        </div>
+        <div style="margin-top:32px">
+          <div class="rowline"><span style="flex:1"><b style="font-weight:500">Nigeria Inflation Dashboard</b><br><small style="color:var(--muted)">Updated 2 days ago</small></span><span class="status pub"><i></i>Published</span>
+            <button class="mini" data-adm="edit">Edit</button><button class="mini" data-goto="case">Preview</button><button class="mini" data-toast="Unpublished (demo).">Unpublish</button></div>
+          <div class="rowline"><span style="flex:1"><b style="font-weight:500">[Draft project]</b><br><small style="color:var(--muted)">Updated today</small></span><span class="status draft"><i></i>Draft</span>
+            <button class="mini" data-adm="edit">Edit</button><button class="mini" data-toast="Preview uses the real public design (demo shows a mock).">Preview</button><button class="mini acc" data-toast="Published! On the live site this goes public instantly.">Publish</button></div>
+        </div>
+      </div>
+
+      <div data-admview="edit" hidden>
+        <p class="idx">EDIT PROJECT</p><h1 style="font-size:30px;letter-spacing:-.03em;margin-top:8px">Nigeria Inflation Dashboard</h1>
+        <div class="rowline" style="margin-top:24px;position:sticky;top:96px;z-index:5"><span class="status draft" id="editstatus"><i></i>Draft</span>
+          <span style="flex:1"></span>
+          <button class="mini" data-toast="Preview opens the real public design, invisible to visitors.">Preview</button>
+          <button class="mini" data-toast="Draft saved.">Save draft</button>
+          <button class="mini acc" id="pubbtn">Publish</button>
+        </div>
+        <div class="panel"><h3>Basic Info</h3>
+          <div style="display:grid;gap:16px;grid-template-columns:1fr}">
+          <div class="field" style="margin:0"><label>Title</label><input value="Nigeria Inflation Dashboard"></div>
+          <div class="field" style="margin:0"><label>Slug</label><input value="nigeria-inflation-dashboard"></div>
+          <div class="field" style="margin:0"><label>Short description</label><textarea rows="2">A dashboard and visual report that turns Nigeria's monthly inflation series into a story.</textarea></div>
+          <div class="field" style="margin:0"><label>Tools (comma separated)</label><input value="Power BI, SQL, Excel"></div></div>
+        </div>
+        <div class="panel"><h3>Story</h3>
+          <div class="field"><label>Question / problem</label><textarea rows="2">[What is the question this project answered?]</textarea></div>
+          <div class="field"><label>Methodology</label><textarea rows="2">[Explain the method…]</textarea></div>
+        </div>
+        <div class="panel"><h3>Findings — repeatable, reorderable</h3>
+          <div class="rowline" style="border:1px solid var(--line)"><span class="mono" style="font-size:20px;font-weight:600">[00.0%]</span><span style="flex:1">[Finding one headline]</span><button class="mini" aria-label="Move up">↑</button><button class="mini" aria-label="Move down">↓</button><button class="mini" data-toast="Removed (demo).">Remove</button></div>
+          <div class="rowline" style="border:1px solid var(--line);border-top:none"><span class="mono" style="font-size:20px;font-weight:600">[0.0×]</span><span style="flex:1">[Finding two headline]</span><button class="mini">↑</button><button class="mini">↓</button><button class="mini" data-toast="Removed (demo).">Remove</button></div>
+          <button class="mini" style="margin-top:12px" data-toast="Added a finding row (demo).">+ Add finding</button>
+        </div>
+        <div class="panel"><h3>Visuals — upload &amp; reorder (drag or ↑↓)</h3>
+          <div class="rowline" style="border:1px dashed var(--line2);justify-content:center;padding:28px"><span class="meta">Click to upload dashboard screenshots · max 25 MB</span></div>
+          <p style="margin-top:12px;font-size:12px;color:var(--muted)">Uploads go straight to Supabase Storage with your session — stored order = reader order.</p>
+        </div>
+        <div class="panel"><h3>SEO</h3>
+          <div class="field"><label>SEO title</label><input placeholder="Default: “Nigeria Inflation Dashboard · Case Study”"></div>
+          <div class="field"><label>Meta description</label><textarea rows="2"></textarea></div>
+        </div>
+      </div>
+
+      <div data-admview="new" hidden>
+        <p class="idx">NEW PROJECT</p><h1 style="font-size:30px;letter-spacing:-.03em;margin-top:8px">Create a case study</h1>
+        <div class="panel"><h3>Start with the basics</h3>
+          <div class="field"><label>Title *</label><input id="newtitle" placeholder="Lagos Rent Observatory"></div>
+          <button class="btn blue" id="createsave">Save draft</button>
+          <p style="margin-top:12px;font-size:12px;color:var(--muted)">Created as a draft — nothing is public until you press Publish.</p>
+        </div>
+      </div>
+
+      <div data-admview="media" hidden>
+        <p class="idx">MEDIA</p><h1 style="font-size:30px;letter-spacing:-.03em;margin-top:8px">Media library</h1>
+        <div class="panel"><h3>Profile photo</h3>
+          <div style="display:flex;gap:24px;align-items:center;flex-wrap:wrap">
+            <div class="portrait" style="width:160px;aspect-ratio:4/5"><span class="tk" style="font-size:28px">TK</span></div>
+            <div class="rowline" style="border:1px dashed var(--line2);flex:1;justify-content:center;padding:28px"><span class="meta">Upload profile photo</span></div>
+          </div>
+        </div>
+        <div class="panel"><h3>All uploads</h3><p style="font-size:13px;color:var(--muted)">Nothing uploaded yet — in the live CMS every screenshot, report page, PDF and dataset appears here.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+  var views=document.querySelectorAll("[data-view]");
+  function show(name){
+    views.forEach(function(v){v.classList.toggle("on",v.dataset.view===name)});
+    document.querySelectorAll("#demobar .views button").forEach(function(b){
+      b.setAttribute("aria-current",b.dataset.goto===name?"true":"false");
+    });
+    window.scrollTo(0,0);
+    location.hash="#/"+name;
+  }
+  document.addEventListener("click",function(e){
+    var g=e.target.closest("[data-goto]");
+    if(g){e.preventDefault();show(g.dataset.goto);return;}
+    var t=e.target.closest("[data-toast]");
+    if(t){toast(t.dataset.toast);return;}
+    var a=e.target.closest("[data-adm]");
+    if(a){
+      var which=a.dataset.adm;
+      var map={dash:"dash",proj:"proj",media:"media",edit:"edit",new:"new"};
+      document.querySelectorAll("[data-admview]").forEach(function(v){v.hidden=v.dataset.admview!==map[which]});
+      document.querySelectorAll(".adm nav button").forEach(function(b){b.classList.toggle("on",b.dataset.adm===which|| (which==="edit"||which==="new")&&b.dataset.adm==="proj")});
+      window.scrollTo(0,0);
+    }
+  });
+  var toastEl=document.getElementById("toast"),tt;
+  function toast(msg){toastEl.textContent=msg;toastEl.classList.add("on");clearTimeout(tt);tt=setTimeout(function(){toastEl.classList.remove("on")},2600);}
+
+  // carousel
+  var idx=0,pages=document.querySelectorAll(".car .page"),dots=document.querySelectorAll(".dots i");
+  function car(n){
+    idx=Math.max(0,Math.min(pages.length-1,n));
+    pages.forEach(function(p,i){p.classList.toggle("on",i===idx)});
+    dots.forEach(function(d,i){d.classList.toggle("on",i===idx)});
+    document.getElementById("carcount").textContent=("0"+(idx+1)).slice(-2)+" / 0"+pages.length;
+    document.getElementById("carprev").disabled=idx===0;
+    document.getElementById("carnext").disabled=idx===pages.length-1;
+  }
+  document.getElementById("carprev").addEventListener("click",function(){car(idx-1)});
+  document.getElementById("carnext").addEventListener("click",function(){car(idx+1)});
+  document.getElementById("car").addEventListener("keydown",function(e){
+    if(e.key==="ArrowLeft"){e.preventDefault();car(idx-1)}
+    if(e.key==="ArrowRight"){e.preventDefault();car(idx+1)}
+  });
+  var tx=null;
+  document.getElementById("car").addEventListener("touchstart",function(e){tx=e.touches[0].clientX},{passive:true});
+  document.getElementById("car").addEventListener("touchend",function(e){
+    if(tx===null)return;var dx=e.changedTouches[0].clientX-tx;tx=null;
+    if(Math.abs(dx)>48)car(idx+(dx<0?1:-1));
+  },{passive:true});
+  car(0);
+
+  // mobile menu
+  var burger=document.getElementById("burger"),mmenu=document.getElementById("mmenu");
+  burger.addEventListener("click",function(){
+    var open=mmenu.classList.toggle("open");
+    burger.setAttribute("aria-expanded",open);
+    burger.textContent=open?"✕":"";
+  });
+  mmenu.addEventListener("click",function(e){if(e.target.closest("a")){mmenu.classList.remove("open");burger.textContent="☰";}});
+
+  // contact form (demo validation)
+  document.getElementById("cform").addEventListener("submit",function(e){
+    e.preventDefault();
+    var n=document.getElementById("cn").value.trim(),m=document.getElementById("ce").value.trim(),q=document.getElementById("cm").value.trim();
+    if(!n||!/.+@.+\..+/.test(m)||q.length<12){toast("Add your name, a valid email and a sentence or two.");return;}
+    toast("On the live site this opens your mail app, pre-addressed to Temidayo.");
+  });
+
+  // admin demo bits
+  document.getElementById("pubbtn").addEventListener("click",function(){
+    var s=document.getElementById("editstatus");
+    s.className="status pub";s.innerHTML="<i></i>Published";
+    toast("Published — live on the public site instantly (demo).");
+  });
+  document.getElementById("createsave").addEventListener("click",function(){
+    var t=document.getElementById("newtitle").value.trim();
+    if(!t){toast("A project needs a title first.");return;}
+    toast("Draft “"+t+"” saved — you would now land in the full editor.");
+  });
+
+  // hash routing
+  var h=location.hash.replace("#/","");
+  if(["home","work","case","about","contact","admin"].indexOf(h)>-1)show(h);
+  window.addEventListener("hashchange",function(){
+    var n=location.hash.replace("#/","");
+    if(["home","work","case","about","contact","admin"].indexOf(n)>-1)show(n);
+  });
+})();
+</script>
+</body>
+</html>

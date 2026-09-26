@@ -35,6 +35,19 @@ export async function createSupabaseServerClient(): Promise<AppSupabaseClient | 
 }
 
 /**
+ * Stateless anon client for cached public reads. RLS limits it to published
+ * content, and because it never touches cookies() it is safe to call inside
+ * unstable_cache() — unlike the cookie-based server client.
+ */
+export function createSupabasePublicClient(): AppSupabaseClient | null {
+  if (!isSupabaseConfigured) return null;
+
+  return createClient<Database>(supabaseConfig.url, supabaseConfig.anonKey, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  });
+}
+
+/**
  * Service-role client — bypasses RLS. Server only, used for administrative
  * storage operations and seeding. Never import this from a client component.
  */

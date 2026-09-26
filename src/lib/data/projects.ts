@@ -7,7 +7,11 @@ import {
   placeholderProjects,
 } from "../content/placeholder-content";
 import type { Database } from "../database.types";
-import { createSupabaseServerClient } from "../supabase/client";
+import {
+  createSupabasePublicClient,
+  createSupabaseServerClient,
+  type AppSupabaseClient,
+} from "../supabase/client";
 import { withPublicUrl, withPublicUrls } from "../supabase/media";
 import type {
   AdminStats,
@@ -117,7 +121,7 @@ const orderPublicSummaries = (rows: ProjectSummary[]) =>
   });
 
 async function queryPublicSummaries(): Promise<DataResult<ProjectSummary[]>> {
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabasePublicClient();
   if (!supabase) return fail("Supabase is not configured on the server.");
 
   const { data: rows, error } = await supabase
@@ -130,12 +134,17 @@ async function queryPublicSummaries(): Promise<DataResult<ProjectSummary[]>> {
 
   if (error) return fail(error.message);
 
-  const summaries = await attachThumbnails((rows ?? []) as unknown as SummaryRow[]);
+  const summaries = await attachThumbnails(
+    (rows ?? []) as unknown as SummaryRow[],
+    supabase,
+  );
   return ok(orderPublicSummaries(summaries));
 }
 
-async function attachThumbnails(rows: SummaryRow[]): Promise<ProjectSummary[]> {
-  const supabase = await createSupabaseServerClient();
+async function attachThumbnails(
+  rows: SummaryRow[],
+  supabase: AppSupabaseClient | null,
+): Promise<ProjectSummary[]> {
   const ids = rows.map((r) => r.id);
   const thumbs = new Map<string, AssetRow>();
 
@@ -159,7 +168,7 @@ const cachedPublicSummaries = unstable_cache(queryPublicSummaries, ["public-proj
 });
 
 async function queryProjectBySlug(slug: string): Promise<DataResult<ProjectWithRelations | null>> {
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabasePublicClient();
   if (!supabase) return fail("Supabase is not configured on the server.");
 
   const { data: row, error } = await supabase
@@ -172,7 +181,7 @@ async function queryProjectBySlug(slug: string): Promise<DataResult<ProjectWithR
   if (error) return fail(error.message);
   if (!row) return ok(null);
 
-  return ok(await assembleProject(row));
+  return ok(await assembleProject(row, supabase));
 }
 
 /** Public list — published projects only, featured first. */
@@ -235,7 +244,9 @@ export async function listAllProjectsForAdmin(): Promise<DataResult<ProjectSumma
     .order("updated_at", { ascending: false });
 
   if (error) return fail(error.message);
-  return ok(await attachThumbnails((rows ?? []) as unknown as SummaryRow[]));
+  return ok(
+    await attachThumbnails((rows ?? []) as unknown as SummaryRow[], supabase),
+  );
 }
 
 export async function getProjectBySlugAnyStatus(
@@ -257,7 +268,7 @@ export async function getProjectBySlugAnyStatus(
   if (error) return fail(error.message);
   if (!row) return ok(null);
 
-  return ok(await assembleProject(row));
+  return ok(await assembleProject(row, supabase));
 }
 
 export async function getProjectById(id: string): Promise<DataResult<ProjectWithRelations | null>> {
@@ -277,7 +288,7 @@ export async function getProjectById(id: string): Promise<DataResult<ProjectWith
   if (error) return fail(error.message);
   if (!row) return ok(null);
 
-  return ok(await assembleProject(row));
+  return ok(await assembleProject(row, supabase));
 }
 
 export async function getAdminStats(): Promise<DataResult<AdminStats>> {
@@ -378,8 +389,10 @@ export async function listAssetsForProject(
   return ok(sortAssets(withPublicUrls(data ?? [])));
 }
 
-async function assembleProject(row: ProjectRow): Promise<ProjectWithRelations> {
-  const supabase = await createSupabaseServerClient();
+async function assembleProject(
+  row: ProjectRow,
+  supabase: AppSupabaseClient | null,
+): Promise<ProjectWithRelations> {
   if (!supabase) {
     return { ...(row as Project), findings: [], assets: [], links: [] };
   }
