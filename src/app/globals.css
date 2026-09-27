@@ -20,8 +20,10 @@
   --color-paper: #f7f4ec;
   --color-paper-2: #efeadf;
   --color-paper-3: #e6e0d1;
-  --color-paper-inverse: #0b1f16;
-  --color-paper-inverse-2: #12291e;
+  /* Deepened by ~1 step: the grain overlay lifts dark fills by a few
+     luminance points, so the ink starts darker to land on the brand value. */
+  --color-paper-inverse: #081711;
+  --color-paper-inverse-2: #0e2118;
 
   --color-ink: #0f1512;
   --color-ink-2: #2a332d;
@@ -61,9 +63,6 @@
 
   body {
     background-color: var(--color-paper);
-    /* Crisp-paper grain: a whisper of fibre over the warm stock. */
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
-    background-size: 160px 160px;
     color: var(--color-ink);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
@@ -89,16 +88,48 @@
     text-wrap: pretty;
   }
 
-  /* Faint paper grain — the print texture that flat screens lack. */
+  /* Paper stock, in two fixed layers that sit above every section, so the
+     whole site reads as one sheet rather than coloured boxes.
+     1) ::before — the macro material: a slow mottle (the unevenness of real
+        stock), the laid lines of mould-made paper, and a print vignette.
+     2) ::after — the micro grain: opaque greyscale fibre, blended in
+        `overlay` so it also shows on the evergreen bands (multiply alone
+        disappears on dark). Both layers ignore pointer events. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 88;
+    pointer-events: none;
+    mix-blend-mode: multiply;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420'%3E%3Cfilter id='c'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.012' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='0' intercept='1'/%3E%3C/feComponentTransfer%3E%3CfeComponentTransfer%3E%3CfeFuncR type='linear' slope='0.22' intercept='0.78'/%3E%3CfeFuncG type='linear' slope='0.22' intercept='0.78'/%3E%3CfeFuncB type='linear' slope='0.22' intercept='0.78'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='420' height='420' filter='url(%23c)'/%3E%3C/svg%3E"),
+      repeating-linear-gradient(
+        0deg,
+        rgba(15, 21, 18, 0.03) 0 1px,
+        transparent 1px 4px
+      ),
+      radial-gradient(
+        125% 90% at 50% 35%,
+        transparent 55%,
+        rgba(15, 21, 18, 0.07)
+      );
+    background-size:
+      420px 420px,
+      auto,
+      auto;
+  }
+
   body::after {
     content: "";
     position: fixed;
     inset: 0;
     z-index: 90;
     pointer-events: none;
-    opacity: 0.05;
-    mix-blend-mode: multiply;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+    opacity: 0.62;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='0' intercept='1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
   }
 
   /* Underline sweep for quiet links. */
@@ -249,23 +280,6 @@
   to {
     transform: translate3d(8px, 12px, 0) rotate(14deg);
   }
-}
-
-/* Giant outlined display words (BigMarquee) and ghost numerals */
-.outline-text {
-  color: transparent;
-  -webkit-text-stroke: 1.5px var(--color-line-strong);
-}
-.on-dark .outline-text {
-  -webkit-text-stroke: 1.5px rgb(247 244 236 / 0.22);
-}
-.ghost-num {
-  color: transparent;
-  -webkit-text-stroke: 1px var(--color-line-strong);
-  transition: -webkit-text-stroke-color 0.5s var(--ease-editorial);
-}
-.group:hover .ghost-num {
-  -webkit-text-stroke-color: var(--color-accent);
 }
 
 @media (prefers-reduced-motion: reduce) {

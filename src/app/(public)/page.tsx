@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { AboutPreview } from "@/components/public/AboutPreview";
-import { BigMarquee } from "@/components/public/BigMarquee";
 import { Capabilities } from "@/components/public/Capabilities";
 import { ContactCTA } from "@/components/public/ContactCTA";
 import { FallbackNotice } from "@/components/public/FallbackNotice";
@@ -80,7 +79,8 @@ export default async function HomePage() {
         </div>
       </Container>
 
-      <BigMarquee />
+      {/* Second pulse of the same editorial strip, running the other way. */}
+      <Ticker reverse duration={46} />
 
       {/* 03 — How I think — the evergreen band */}
       <section className="on-dark bg-paper-inverse text-paper">

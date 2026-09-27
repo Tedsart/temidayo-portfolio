@@ -12,13 +12,26 @@ const ITEMS = [
   "Reports that end in decisions",
 ];
 
-export function Ticker() {
+export function Ticker({
+  reverse = false,
+  duration = 38,
+}: {
+  /** Run the strip the other way — used where two strips sit on one page. */
+  reverse?: boolean;
+  duration?: number;
+}) {
   return (
     <div
       className="overflow-hidden border-y border-ink bg-ink py-3 text-paper"
       aria-hidden="true"
     >
-      <div className="ticker-track flex w-max">
+      <div
+        className="ticker-track flex w-max"
+        style={{
+          animationDirection: reverse ? "reverse" : undefined,
+          animationDuration: `${duration}s`,
+        }}
+      >
         {[0, 1].map((copy) => (
           <div key={copy} className="flex shrink-0 items-center">
             {ITEMS.map((item) => (

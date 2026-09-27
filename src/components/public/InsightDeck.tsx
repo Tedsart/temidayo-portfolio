@@ -112,23 +112,31 @@ function ScatterFig({ reduced }: { reduced: boolean }) {
 function BarsFig({ reduced }: { reduced: boolean }) {
   const max = 140;
   const bw = IW / BARS.length;
+  const baseline = H - PAD.bottom;
+  const peak = Math.max(...BARS);
   return (
     <Frame>
       {BARS.map((v, i) => {
         const h = (v / max) * IH;
-        const peak = v === Math.max(...BARS);
+        const isPeak = v === peak;
         return (
+          /* Geometry (x/y/width/height) is static; only the transform is
+             animated. Animating SVG geometry attributes is unreliable —
+             Chromium applies attribute + CSS property and the bar drifts
+             out of the plot. Scaling from the baseline keeps it honest. */
           <motion.rect
             key={i}
             x={PAD.left + i * bw + bw * 0.18}
             width={bw * 0.64}
-            y={H - PAD.bottom - h}
-            fill={peak ? "var(--color-marker)" : "#0f1512"}
-            fillOpacity={peak ? 1 : 0.18}
-            stroke={peak ? "var(--color-ink)" : undefined}
-            strokeWidth={peak ? 1 : 0}
-            initial={reduced ? false : { height: 0, y: H - PAD.bottom }}
-            animate={{ height: h, y: H - PAD.bottom - h }}
+            y={baseline - h}
+            height={h}
+            fill={isPeak ? "var(--color-marker)" : "#0f1512"}
+            fillOpacity={isPeak ? 1 : 0.18}
+            stroke={isPeak ? "var(--color-ink)" : undefined}
+            strokeWidth={isPeak ? 1 : 0}
+            style={{ transformBox: "fill-box", transformOrigin: "bottom" }}
+            initial={reduced ? false : { scaleY: 0 }}
+            animate={{ scaleY: 1 }}
             transition={{
               duration: reduced ? 0 : 0.8,
               delay: reduced ? 0 : i * 0.05,
