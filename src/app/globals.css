@@ -235,6 +235,36 @@
   }
 }
 
+/* Ambient hero glyphs */
+.glyph-drift {
+  animation: glyph-drift 12s ease-in-out infinite alternate;
+}
+@keyframes glyph-drift {
+  from {
+    transform: translate3d(0, -10px, 0) rotate(0deg);
+  }
+  to {
+    transform: translate3d(8px, 12px, 0) rotate(14deg);
+  }
+}
+
+/* Giant outlined display words (BigMarquee) and ghost numerals */
+.outline-text {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--color-line-strong);
+}
+.on-dark .outline-text {
+  -webkit-text-stroke: 1.5px rgb(247 244 236 / 0.22);
+}
+.ghost-num {
+  color: transparent;
+  -webkit-text-stroke: 1px var(--color-line-strong);
+  transition: -webkit-text-stroke-color 0.5s var(--ease-editorial);
+}
+.group:hover .ghost-num {
+  -webkit-text-stroke-color: var(--color-accent);
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

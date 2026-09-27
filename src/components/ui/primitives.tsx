@@ -29,9 +29,9 @@ const BUTTON_BASE =
 
 const BUTTON_VARIANTS = {
   primary:
-    "bg-ink text-paper px-6 py-3 text-sm tracking-tight hover:bg-accent active:scale-[0.99]",
+    "bg-ink text-paper px-6 py-3 text-sm tracking-tight shadow-editorial hover:-translate-y-0.5 hover:bg-accent hover:shadow-lift active:translate-y-0 active:scale-[0.99]",
   accent:
-    "bg-accent text-white px-6 py-3 text-sm tracking-tight hover:bg-accent-hover active:scale-[0.99]",
+    "bg-accent text-white px-6 py-3 text-sm tracking-tight shadow-editorial hover:-translate-y-0.5 hover:bg-accent-hover hover:shadow-lift active:translate-y-0 active:scale-[0.99]",
   outline:
     "border border-ink/25 text-ink px-6 py-3 text-sm tracking-tight hover:border-ink hover:bg-ink/[0.04]",
   ghost: "text-ink px-3 py-2 text-sm hover:text-accent",
@@ -107,27 +107,40 @@ export function SectionHeading({
   title,
   description,
   align = "left",
+  dark = false,
   className = "",
 }: {
   index?: string;
   title: string;
   description?: string;
   align?: "left" | "between";
+  dark?: boolean;
   className?: string;
 }) {
   return (
     <div
-      className={`flex flex-col gap-6 border-t border-ink pt-6 md:flex-row md:items-end md:justify-between ${
-        align === "between" ? "md:gap-16" : ""
-      } ${className}`}
+      className={`flex flex-col gap-6 border-t pt-6 md:flex-row md:items-end md:justify-between ${
+        dark ? "border-paper/20" : "border-ink"
+      } ${align === "between" ? "md:gap-16" : ""} ${className}`}
     >
       <div className="max-w-2xl">
-        {index ? <p className="section-index mb-3">{index}</p> : null}
+        {index ? (
+          <p
+            className="section-index mb-3"
+            style={dark ? { color: "var(--color-marker)" } : undefined}
+          >
+            {index}
+          </p>
+        ) : null}
         <h2 className="text-[clamp(2rem,4.5vw,3.25rem)] font-semibold leading-[1.05]">
           <DisplayReveal>{title}</DisplayReveal>
         </h2>
         {description ? (
-          <p className="mt-4 max-w-xl text-base leading-relaxed text-muted md:text-lg">
+          <p
+            className={`mt-4 max-w-xl text-base leading-relaxed md:text-lg ${
+              dark ? "text-paper/60" : "text-muted"
+            }`}
+          >
             {description}
           </p>
         ) : null}

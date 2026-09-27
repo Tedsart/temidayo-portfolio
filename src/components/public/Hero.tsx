@@ -1,38 +1,37 @@
 import Link from "next/link";
-import { InsightDeck } from "@/components/public/InsightDeck";
-import { DisplayReveal, Reveal } from "@/components/motion/Reveal";
+import { InsightDeck, DeckParallax } from "@/components/public/InsightDeck";
+import { AmbientField } from "@/components/public/AmbientField";
+import {
+  MarkerWord,
+  Reveal,
+  ScrambleText,
+  WordReveal,
+} from "@/components/motion/Reveal";
 import { MetaLabel } from "@/components/ui/primitives";
 import { siteConfig } from "@/lib/config";
 
 export function Hero() {
   return (
     <section className="relative overflow-hidden border-b border-line">
+      {/* layered brand atmosphere: soft emerald + lime radial tints over paper */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-line-strong to-transparent"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(52rem_30rem_at_85%_-10%,rgb(11_107_69/0.10),transparent_60%),radial-gradient(40rem_26rem_at_-10%_85%,rgb(216_246_81/0.16),transparent_60%)]"
       />
+      <AmbientField />
 
-      <div className="mx-auto grid w-full max-w-[1360px] gap-14 px-5 pb-16 pt-16 sm:px-8 md:pb-24 md:pt-24 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:gap-16 lg:px-12">
+      <div className="relative mx-auto grid w-full max-w-[1360px] gap-14 px-5 pb-16 pt-16 sm:px-8 md:pb-24 md:pt-24 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:gap-16 lg:px-12">
         <div>
-          <Reveal>
-            <MetaLabel className="flex flex-wrap items-center gap-x-3 gap-y-2 text-ink-2">
-              <span aria-hidden="true" className="inline-block h-1.5 w-1.5 rounded-full bg-accent" />
-              Data Analyst · Data Visualization · Data Storytelling
-            </MetaLabel>
-          </Reveal>
+          <MetaLabel className="flex flex-wrap items-center gap-x-3 gap-y-2 text-ink-2">
+            <span aria-hidden="true" className="inline-block h-1.5 w-1.5 rounded-full bg-accent" />
+            <ScrambleText text="Data Analyst · Data Visualization · Data Storytelling" delay={0.2} />
+          </MetaLabel>
 
           <h1 className="mt-7 text-[clamp(2.75rem,8.5vw,5.5rem)] font-semibold leading-[0.98] tracking-[-0.02em]">
-            <DisplayReveal delay={0.05}>Data that</DisplayReveal>
-            <DisplayReveal delay={0.14}>
-              makes{" "}
-              <span className="relative inline-block">
-                <span className="relative z-10">sense.</span>
-                <span
-                  aria-hidden="true"
-                  className="absolute inset-x-0 bottom-[0.12em] z-0 h-[0.14em] bg-marker/70"
-                />
-              </span>
-            </DisplayReveal>
+            <WordReveal text="Data that" delay={0.15} className="block" />
+            <span className="block">
+              <WordReveal text="makes" delay={0.32} /> <MarkerWord word="sense." />
+            </span>
           </h1>
 
           <Reveal index={1} className="mt-7 max-w-xl">
@@ -44,14 +43,14 @@ export function Hero() {
           <Reveal index={2} className="mt-9 flex flex-wrap items-center gap-3">
             <Link
               href="/work"
-              className="inline-flex items-center gap-3 bg-marker px-6 py-3.5 text-sm font-medium text-ink transition-colors hover:bg-ink hover:text-marker"
+              className="inline-flex items-center gap-3 bg-marker px-6 py-3.5 text-sm font-medium text-ink shadow-editorial transition-all hover:-translate-y-0.5 hover:bg-ink hover:text-marker hover:shadow-lift active:translate-y-0"
             >
               Explore my work
               <span aria-hidden="true">→</span>
             </Link>
             <Link
               href="/contact"
-              className="inline-flex items-center gap-3 border border-ink/25 px-6 py-3.5 text-sm text-ink transition-colors hover:border-ink hover:bg-ink/[0.04]"
+              className="inline-flex items-center gap-3 border border-ink/25 px-6 py-3.5 text-sm text-ink transition-all hover:-translate-y-0.5 hover:border-ink hover:bg-ink/[0.04] hover:shadow-editorial active:translate-y-0"
             >
               Let&apos;s connect
             </Link>
@@ -76,7 +75,9 @@ export function Hero() {
         </div>
 
         <Reveal index={2} y={24} className="lg:pl-4">
-          <InsightDeck />
+          <DeckParallax>
+            <InsightDeck />
+          </DeckParallax>
         </Reveal>
       </div>
     </section>

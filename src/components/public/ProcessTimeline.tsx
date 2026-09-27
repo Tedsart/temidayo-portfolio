@@ -9,9 +9,10 @@ import { processStages } from "@/lib/config";
  *
  * A single vertical rule fills as the reader scrolls through the stages. It is
  * a reading device, not a corporate process diagram: no boxes, no arrows, no
- * icons. Reduced-motion visitors get the finished rule and no tracking.
+ * icons. `dark` renders it on the evergreen band. Reduced-motion visitors get
+ * the finished rule and no tracking.
  */
-export function ProcessTimeline() {
+export function ProcessTimeline({ dark = false }: { dark?: boolean }) {
   const ref = useRef<HTMLOListElement>(null);
   const reduced = useReducedMotion();
 
@@ -30,11 +31,15 @@ export function ProcessTimeline() {
     <div className="relative">
       <span
         aria-hidden="true"
-        className="absolute left-[13px] top-2 bottom-2 w-px bg-line md:left-[15px]"
+        className={`absolute left-[13px] top-2 bottom-2 w-px md:left-[15px] ${
+          dark ? "bg-paper/15" : "bg-line"
+        }`}
       />
       <motion.span
         aria-hidden="true"
-        className="absolute left-[13px] top-2 w-px origin-top bg-accent md:left-[15px]"
+        className={`absolute left-[13px] top-2 w-px origin-top md:left-[15px] ${
+          dark ? "bg-marker" : "bg-accent"
+        }`}
         style={{
           height: "calc(100% - 1rem)",
           scaleY: reduced ? 1 : progress,
@@ -57,15 +62,27 @@ export function ProcessTimeline() {
           >
             <span
               aria-hidden="true"
-              className="absolute left-0 mt-1.5 inline-flex h-7 w-7 items-center justify-center rounded-full border border-line bg-paper font-mono text-[10px] tracking-[0.08em] text-muted md:h-8 md:w-8"
+              className={`absolute left-0 mt-1.5 inline-flex h-7 w-7 items-center justify-center rounded-full border font-mono text-[10px] tracking-[0.08em] md:h-8 md:w-8 ${
+                dark
+                  ? "border-paper/25 bg-paper-inverse text-paper/70"
+                  : "border-line bg-paper text-muted"
+              }`}
             >
               {stage.index}
             </span>
 
-            <h3 className="text-xl font-semibold tracking-tight md:text-2xl">
+            <h3
+              className={`text-xl font-semibold tracking-tight md:text-2xl ${
+                dark ? "text-paper" : ""
+              }`}
+            >
               {stage.title}
             </h3>
-            <p className="max-w-xl text-base leading-relaxed text-muted md:text-lg md:leading-relaxed">
+            <p
+              className={`max-w-xl text-base leading-relaxed md:text-lg md:leading-relaxed ${
+                dark ? "text-paper/60" : "text-muted"
+              }`}
+            >
               {stage.body}
             </p>
           </motion.li>

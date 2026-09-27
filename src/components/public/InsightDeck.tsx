@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useInView, useReducedMotion } from "motion/react";
+import { motion, useInView, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
 /**
@@ -376,5 +376,21 @@ export function SparkSignature() {
         <p className="label-meta text-faint">every project, same discipline</p>
       </div>
     </div>
+  );
+}
+
+/** Gentle scroll parallax wrapper for the deck — depth without gimmicks. */
+export function DeckParallax({ children }: { children: React.ReactNode }) {
+  const reduced = useReducedMotion();
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+  const y = useTransform(scrollYProgress, [0, 1], [-26, 54]);
+  return (
+    <motion.div ref={ref} style={{ y: reduced ? 0 : y }}>
+      {children}
+    </motion.div>
   );
 }

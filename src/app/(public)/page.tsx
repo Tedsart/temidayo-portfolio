@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { AboutPreview } from "@/components/public/AboutPreview";
+import { BigMarquee } from "@/components/public/BigMarquee";
 import { Capabilities } from "@/components/public/Capabilities";
 import { ContactCTA } from "@/components/public/ContactCTA";
 import { FallbackNotice } from "@/components/public/FallbackNotice";
@@ -79,16 +80,19 @@ export default async function HomePage() {
         </div>
       </Container>
 
-      {/* 03 — How I think */}
-      <section className="border-y border-line bg-paper-2/60">
+      <BigMarquee />
+
+      {/* 03 — How I think — the evergreen band */}
+      <section className="on-dark bg-paper-inverse text-paper">
         <Container className="py-20 md:py-28">
           <SectionHeading
+            dark
             index="03 — HOW I THINK"
             title="Understand → Explore → Analyze → Visualize → Communicate"
             description="The same sequence on every project, whether it is a one-page answer or a full dashboard."
           />
           <div className="mt-14">
-            <ProcessTimeline />
+            <ProcessTimeline dark />
           </div>
         </Container>
       </section>
