@@ -13,6 +13,11 @@ import { getCookieStore } from "./supabase/cookie-store";
 export const PREVIEW_COOKIE = "tk_preview";
 
 export async function isPreviewMode(): Promise<boolean> {
-  const store = await getCookieStore();
-  return store.get(PREVIEW_COOKIE)?.value === "on";
+  try {
+    const store = await getCookieStore();
+    return store.get(PREVIEW_COOKIE)?.value === "on";
+  } catch {
+    // Static prerender contexts (sitemap, build) have no cookie store.
+    return false;
+  }
 }

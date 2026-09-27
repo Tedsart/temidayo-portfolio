@@ -9,14 +9,8 @@ export function Capabilities() {
         <Reveal
           key={capability.id}
           index={i}
-          className="group relative border-t border-ink pt-6"
+          className="group border-t border-ink pt-6"
         >
-          <span
-            aria-hidden="true"
-            className="ghost-num pointer-events-none absolute -top-8 right-0 font-display text-[6.5rem] font-semibold leading-none"
-          >
-            {capability.index}
-          </span>
           <div className="flex items-baseline justify-between">
             <span className="section-index transition-colors duration-300 group-hover:text-accent">
               {capability.index}

@@ -62,7 +62,7 @@ function Frame({ children }: { children: React.ReactNode }) {
       aria-label="Animated data figures: a scatter with fitted line, a bar distribution, a momentum area and a composition ring."
       className="h-auto w-full"
     >
-      <g stroke="#f6f3ec" strokeOpacity="0.07" strokeWidth="1">
+      <g stroke="#0f1512" strokeOpacity="0.06" strokeWidth="1">
         {gridX.map((x) => (
           <line key={`x${x}`} x1={x} y1={PAD.top - 8} x2={x} y2={H - PAD.bottom} />
         ))}
@@ -70,7 +70,7 @@ function Frame({ children }: { children: React.ReactNode }) {
           <line key={`y${y}`} x1={PAD.left} y1={y} x2={W - PAD.right} y2={y} />
         ))}
       </g>
-      <g stroke="#f6f3ec" strokeOpacity="0.26" strokeWidth="1">
+      <g stroke="#0f1512" strokeOpacity="0.28" strokeWidth="1">
         <line x1={PAD.left} y1={H - PAD.bottom} x2={W - PAD.right} y2={H - PAD.bottom} />
         <line x1={PAD.left} y1={PAD.top - 8} x2={PAD.left} y2={H - PAD.bottom} />
       </g>
@@ -88,8 +88,8 @@ function ScatterFig({ reduced }: { reduced: boolean }) {
           cx={p.x}
           cy={p.y}
           r={3}
-          fill="#f6f3ec"
-          fillOpacity={0.5}
+          fill="#0f1512"
+          fillOpacity={0.35}
           initial={reduced ? false : { opacity: 0, scale: 0.3 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: reduced ? 0 : 0.45, delay: reduced ? 0 : i * 0.02, ease: EASE }}
@@ -97,7 +97,7 @@ function ScatterFig({ reduced }: { reduced: boolean }) {
       ))}
       <motion.path
         d={`M ${PAD.left} ${H - PAD.bottom - 10} L ${W - PAD.right} ${PAD.top + 40}`}
-        stroke="var(--color-marker)"
+        stroke="var(--color-accent)"
         strokeWidth="2.5"
         strokeLinecap="round"
         fill="none"
@@ -123,8 +123,10 @@ function BarsFig({ reduced }: { reduced: boolean }) {
             x={PAD.left + i * bw + bw * 0.18}
             width={bw * 0.64}
             y={H - PAD.bottom - h}
-            fill={peak ? "var(--color-marker)" : "#f6f3ec"}
-            fillOpacity={peak ? 1 : 0.34}
+            fill={peak ? "var(--color-marker)" : "#0f1512"}
+            fillOpacity={peak ? 1 : 0.18}
+            stroke={peak ? "var(--color-ink)" : undefined}
+            strokeWidth={peak ? 1 : 0}
             initial={reduced ? false : { height: 0, y: H - PAD.bottom }}
             animate={{ height: h, y: H - PAD.bottom - h }}
             transition={{
@@ -151,14 +153,14 @@ function AreaFig({ reduced }: { reduced: boolean }) {
     <Frame>
       <motion.path
         d={area}
-        fill="var(--color-marker)"
+        fill="var(--color-accent)"
         initial={reduced ? false : { opacity: 0 }}
-        animate={{ opacity: 0.14 }}
+        animate={{ opacity: 0.1 }}
         transition={{ duration: reduced ? 0 : 1.2, delay: reduced ? 0 : 0.9 }}
       />
       <motion.path
         d={line}
-        stroke="var(--color-marker)"
+        stroke="var(--color-accent)"
         strokeWidth="2.5"
         fill="none"
         strokeLinecap="round"
@@ -174,6 +176,8 @@ function AreaFig({ reduced }: { reduced: boolean }) {
             cy={p.y}
             r={5}
             fill="var(--color-marker)"
+            stroke="var(--color-ink)"
+            strokeWidth={1.5}
             initial={reduced ? false : { opacity: 0, scale: 0 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: reduced ? 0 : 0.4, delay: reduced ? 0 : 1.5 }}
@@ -204,8 +208,8 @@ function DonutFig({ reduced }: { reduced: boolean }) {
               cy={cy}
               r={r}
               fill="none"
-              stroke={i === 0 ? "var(--color-marker)" : "#f6f3ec"}
-              strokeOpacity={i === 0 ? 1 : 0.55 - i * 0.12}
+              stroke={i === 0 ? "var(--color-marker)" : "#0f1512"}
+              strokeOpacity={i === 0 ? 1 : 0.5 - i * 0.12}
               strokeWidth={i === 0 ? 26 : 18}
               strokeDasharray={`${seg.value * C - 6} ${C - seg.value * C + 6}`}
               strokeDashoffset={-start * C}
@@ -224,8 +228,8 @@ function DonutFig({ reduced }: { reduced: boolean }) {
           textAnchor="end"
           fontSize="12"
           letterSpacing="0.12em"
-          fill="#f6f3ec"
-          fillOpacity={i === 0 ? 0.9 : 0.5}
+          fill="#0f1512"
+          fillOpacity={i === 0 ? 0.9 : 0.55}
           fontFamily="var(--font-mono)"
           initial={reduced ? false : { opacity: 0, x: 8 }}
           animate={{ opacity: 1, x: 0 }}
@@ -264,7 +268,7 @@ export function InsightDeck() {
   return (
     <div
       ref={boxRef}
-      className="relative w-full bg-paper-inverse text-paper shadow-lift transition-transform duration-300 ease-out will-change-transform"
+      className="relative w-full border border-line bg-paper text-ink shadow-lift transition-transform duration-300 ease-out will-change-transform"
       style={{
         transform: reduced
           ? undefined
@@ -280,8 +284,8 @@ export function InsightDeck() {
       onBlur={() => setPaused(false)}
     >
       <div className="flex items-center justify-between px-5 pt-4">
-        <p className="label-meta text-paper/45">THE WORK, ANIMATED</p>
-        <p className="label-meta text-paper/45" aria-live="off">
+        <p className="label-meta text-faint">THE WORK, ANIMATED</p>
+        <p className="label-meta text-faint" aria-live="off">
           {String(active + 1).padStart(2, "0")} / {String(FIGS.length).padStart(2, "0")}
         </p>
       </div>
@@ -293,10 +297,10 @@ export function InsightDeck() {
         {fig.id === "donut" ? <DonutFig reduced={Boolean(reduced)} /> : null}
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-paper/10 px-5 py-4">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line px-5 py-4">
         <div>
-          <p className="label-meta text-paper/70">{fig.label}</p>
-          <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-paper/35">
+          <p className="label-meta text-ink-2">{fig.label}</p>
+          <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-faint">
             {fig.note}
           </p>
         </div>
@@ -311,7 +315,7 @@ export function InsightDeck() {
               className={`h-2 rounded-full transition-all duration-500 ${
                 i === active
                   ? "w-8 bg-marker"
-                  : "w-2 bg-paper/25 hover:bg-paper/50"
+                  : "w-2 bg-ink/15 hover:bg-ink/35"
               }`}
             />
           ))}

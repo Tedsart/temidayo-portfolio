@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { CaptionedFigure, MediaFallback } from "@/components/public/AssetImage";
 import { CountUp } from "@/components/motion/CountUp";
 import { Reveal } from "@/components/motion/Reveal";
@@ -15,21 +14,23 @@ export function DashboardGallery({ shots }: { shots: ProjectAsset[] }) {
       {shots.map((shot, i) => (
         <Reveal key={shot.id} as="div">
           <CaptionedFigure caption={shot.caption} index={padIndex(i + 1)}>
-            <div className="relative overflow-hidden border border-line bg-paper-inverse">
-              <div className="relative aspect-[16/10] w-full">
-                {shot.public_url ? (
-                  <Image
-                    src={shot.public_url}
-                    alt={shot.alt_text || `Dashboard screenshot ${padIndex(i + 1)}`}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 1100px"
-                    loading="lazy"
-                    className="object-contain"
-                  />
-                ) : (
+            <div className="overflow-hidden border border-line bg-paper-2">
+              {shot.public_url ? (
+                /* Plain <img> on purpose: screenshots render at their uploaded
+                   aspect instead of being cropped into a fixed frame. */
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={shot.public_url}
+                  alt={shot.alt_text || `Dashboard screenshot ${padIndex(i + 1)}`}
+                  loading="lazy"
+                  decoding="async"
+                  className="block h-auto w-full"
+                />
+              ) : (
+                <div className="aspect-[16/10]">
                   <MediaFallback label="Screenshot not uploaded yet" />
-                )}
-              </div>
+                </div>
+              )}
             </div>
           </CaptionedFigure>
         </Reveal>

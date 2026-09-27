@@ -75,9 +75,9 @@ export function ReportCarousel({ pages }: { pages: ProjectAsset[] }) {
             else prev();
           }
         }}
-        className="group relative overflow-hidden border border-line bg-paper-inverse focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+        className="group relative overflow-hidden border border-line bg-paper-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
       >
-        <div className="relative aspect-[4/3] w-full sm:aspect-[3/2] lg:aspect-[16/9]">
+        <div className="relative h-[380px] w-full sm:h-[460px] lg:h-[540px]">
           <AnimatePresence initial={false} mode="popLayout">
             <motion.div
               key={page.id}
@@ -100,12 +100,12 @@ export function ReportCarousel({ pages }: { pages: ProjectAsset[] }) {
           </AnimatePresence>
         </div>
 
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 bg-gradient-to-t from-paper-inverse/80 to-transparent p-4 sm:p-5">
-          <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-paper/80">
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 bg-gradient-to-t from-paper-2 via-paper-2/80 to-transparent p-4 sm:p-5">
+          <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-ink-2">
             {page.caption || page.alt_text || `Page ${padIndex(index + 1)}`}
           </p>
           <p
-            className="font-mono text-[11px] tracking-[0.2em] text-paper/80"
+            className="font-mono text-[11px] tracking-[0.2em] text-ink-2"
             aria-live="polite"
             aria-atomic="true"
           >

@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import { CaseStudy } from "@/components/public/CaseStudy";
 import { siteConfig } from "@/lib/config";
 import {
-  getAllPublishedSlugs,
   getNextPublishedProject,
   getProjectBySlugAnyStatus,
   getPublishedProjectBySlug,
@@ -12,12 +11,7 @@ import { getAdminUser } from "@/lib/supabase/client";
 import { isPreviewMode } from "@/lib/preview";
 import { absoluteUrl } from "@/lib/utils";
 
-export const dynamicParams = true;
-
-export async function generateStaticParams() {
-  const slugs = await getAllPublishedSlugs();
-  return slugs.map((slug) => ({ slug }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,

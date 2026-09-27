@@ -75,9 +75,11 @@ export function Hero() {
         </div>
 
         <Reveal index={2} y={24} className="lg:pl-4">
-          <DeckParallax>
-            <InsightDeck />
-          </DeckParallax>
+          <div className="mx-auto w-full max-w-[26rem] lg:ml-auto">
+            <DeckParallax>
+              <InsightDeck />
+            </DeckParallax>
+          </div>
         </Reveal>
       </div>
     </section>
