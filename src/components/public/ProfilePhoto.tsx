@@ -1,10 +1,14 @@
+"use client";
+
 import Image from "next/image";
+import { motion, useReducedMotion } from "motion/react";
 import type { ProjectAsset } from "@/lib/types";
 
 /**
- * Editorial portrait treatment: sharp corners, a hairline frame and a
- * monospace caption. When no photo has been uploaded through the CMS this
- * renders an obvious, designed placeholder — never an invented face.
+ * Editorial portrait treatment: sharp corners, a hairline frame, a monospace
+ * caption — and a barely-there Ken Burns breathe so the portrait feels alive.
+ * When no photo has been uploaded through the CMS this renders an obvious,
+ * designed placeholder — never an invented face.
  */
 export function ProfilePhoto({
   photo,
@@ -17,18 +21,28 @@ export function ProfilePhoto({
   priority?: boolean;
   className?: string;
 }) {
+  const reduced = useReducedMotion();
+
   return (
-    <div className={`relative overflow-hidden border border-line bg-paper-2 ${className}`}>
+    <div
+      className={`relative overflow-hidden border border-line bg-paper-2 shadow-editorial ${className}`}
+    >
       <div className="relative aspect-[4/5] w-full">
         {photo?.public_url ? (
-          <Image
-            src={photo.public_url}
-            alt={photo.alt_text || "Portrait of Temidayo Kukoyi"}
-            fill
-            sizes={sizes}
-            priority={priority}
-            className="object-cover object-top"
-          />
+          <motion.div
+            className="absolute inset-0"
+            animate={reduced ? undefined : { scale: [1, 1.06, 1] }}
+            transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <Image
+              src={photo.public_url}
+              alt={photo.alt_text || "Portrait of Temidayo Kukoyi"}
+              fill
+              sizes={sizes}
+              priority={priority}
+              className="object-cover object-top"
+            />
+          </motion.div>
         ) : (
           <div className="grid-paper flex h-full w-full flex-col items-center justify-center gap-4 bg-paper-2">
             <span

@@ -3,6 +3,7 @@ import { Archivo, Fraunces, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 
 import { siteConfig } from "@/lib/config";
+import { getSiteProfile } from "@/lib/data/projects";
 import { absoluteUrl } from "@/lib/utils";
 
 /**
@@ -68,6 +69,9 @@ export const metadata: Metadata = {
     follow: true,
     googleBot: { index: true, follow: true, "max-image-preview": "large" },
   },
+  verification: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+    ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
+    : undefined,
 };
 
 export const viewport: Viewport = {
@@ -76,11 +80,54 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const profile = await getSiteProfile().catch(() => null);
+  const p = profile?.data ?? null;
+  const sameAs = [p?.linkedin, p?.github].filter(
+    (value): value is string => Boolean(value),
+  );
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Person",
+        "@id": `${siteConfig.url}#person`,
+        name: siteConfig.name,
+        jobTitle: "Data Analyst",
+        description: siteConfig.tagline,
+        url: siteConfig.url,
+        email: p?.email ?? siteConfig.email ?? undefined,
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: "Lagos",
+          addressCountry: "NG",
+        },
+        knowsAbout: [
+          "Data analysis",
+          "Data visualization",
+          "Data storytelling",
+          "Power BI",
+          "Dashboard design",
+          "Statistical analysis",
+        ],
+        ...(sameAs.length ? { sameAs } : {}),
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${siteConfig.url}#website`,
+        url: siteConfig.url,
+        name: `${siteConfig.name} — ${siteConfig.role}`,
+        description: siteConfig.description,
+        publisher: { "@id": `${siteConfig.url}#person` },
+      },
+    ],
+  };
+
   return (
     <html
       lang="en"
@@ -88,6 +135,10 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="flex min-h-screen flex-col bg-paper text-ink antialiased">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:bg-ink focus:px-4 focus:py-3 focus:text-sm focus:text-paper"

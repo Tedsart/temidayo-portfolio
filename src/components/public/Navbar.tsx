@@ -33,18 +33,24 @@ export function Navbar() {
     <header
       className={`sticky top-0 z-50 w-full transition-colors duration-300 ${
         scrolled || open
-          ? "border-b border-line bg-paper/85 backdrop-blur-md"
+          ? "border-b border-line bg-paper/85 shadow-editorial backdrop-blur-md"
           : "border-b border-transparent bg-transparent"
       }`}
     >
       <div className="mx-auto flex h-16 w-full max-w-[1360px] items-center justify-between gap-6 px-5 sm:px-8 lg:px-12">
         <Link
           href="/"
-          className="group font-mono text-[13px] font-medium uppercase tracking-[0.16em] text-ink"
-          aria-label={`${siteConfig.name} — home`}
+          className="group flex items-baseline gap-1 font-display text-lg font-semibold tracking-tight text-ink md:text-xl"
+          aria-label={`${siteConfig.name} — back to home`}
+          title="Back to home"
         >
-          <span className="transition-colors group-hover:text-accent">TEMIDAYO</span>{" "}
-          <span className="text-muted transition-colors group-hover:text-accent">KUKOYI</span>
+          <span className="transition-colors group-hover:text-accent">
+            Temidayo Kukoyi
+          </span>
+          <span
+            aria-hidden="true"
+            className="inline-block h-2 w-2 rounded-full bg-marker transition-transform duration-300 group-hover:scale-125"
+          />
         </Link>
 
         <nav aria-label="Primary" className="hidden items-center gap-8 md:flex">

@@ -35,7 +35,7 @@ export function ProjectCard({
       >
         <Link
           href={`/work/${project.slug}`}
-          className={`group/media relative block overflow-hidden bg-paper-2 ${
+          className={`group/media relative block overflow-hidden bg-paper-2 shadow-editorial transition-all duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)] hover:-translate-y-1.5 hover:shadow-lift ${
             variant === "reversed" ? "lg:order-2" : ""
           }`}
           aria-label={`Open case study: ${project.title}`}

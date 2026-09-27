@@ -242,6 +242,16 @@ export function InsightDeck() {
   const reduced = useReducedMotion();
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+  const boxRef = useRef<HTMLDivElement>(null);
+
+  function onMove(event: React.MouseEvent) {
+    if (reduced || !boxRef.current) return;
+    const rect = boxRef.current.getBoundingClientRect();
+    const px = (event.clientX - rect.left) / rect.width - 0.5;
+    const py = (event.clientY - rect.top) / rect.height - 0.5;
+    setTilt({ x: py * -5, y: px * 7 });
+  }
 
   useEffect(() => {
     if (reduced || paused) return;
@@ -253,9 +263,19 @@ export function InsightDeck() {
 
   return (
     <div
-      className="relative w-full bg-paper-inverse text-paper"
+      ref={boxRef}
+      className="relative w-full bg-paper-inverse text-paper shadow-lift transition-transform duration-300 ease-out will-change-transform"
+      style={{
+        transform: reduced
+          ? undefined
+          : `perspective(1100px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+      }}
+      onMouseMove={onMove}
+      onMouseLeave={() => {
+        setPaused(false);
+        setTilt({ x: 0, y: 0 });
+      }}
       onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
       onFocus={() => setPaused(true)}
       onBlur={() => setPaused(false)}
     >
@@ -322,7 +342,7 @@ export function SparkSignature() {
   const peak = coords[coords.length - 1];
 
   return (
-    <div ref={ref} className="w-full border border-line bg-paper p-5">
+    <div ref={ref} className="w-full border border-line bg-paper p-5 shadow-editorial">
       <svg viewBox={`0 0 ${W2} ${H2}`} className="h-auto w-full" aria-label="A rising sparkline marking the trajectory of the work.">
         <g stroke="var(--color-line)" strokeWidth="1">
           {[0.25, 0.5, 0.75].map((t) => (

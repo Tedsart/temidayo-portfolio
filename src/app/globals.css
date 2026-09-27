@@ -68,7 +68,7 @@
   }
 
   /* Headlines speak in the display serif; optical sizing keeps big type lush
-     and small caps crisp. */
+     and small caps crisp. Balanced wrapping keeps multi-line titles elegant. */
   h1,
   h2,
   h3,
@@ -77,6 +77,13 @@
     font-optical-sizing: auto;
     letter-spacing: -0.015em;
     font-weight: 600;
+    text-wrap: balance;
+  }
+
+  p,
+  dd,
+  li {
+    text-wrap: pretty;
   }
 
   /* Faint paper grain — the print texture that flat screens lack. */
@@ -153,7 +160,7 @@
   font-family: var(--font-mono);
   font-size: 0.6875rem;
   letter-spacing: 0.2em;
-  color: var(--color-faint);
+  color: var(--color-accent);
 }
 
 @utility hairline {

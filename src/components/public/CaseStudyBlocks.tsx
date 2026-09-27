@@ -55,7 +55,13 @@ export function FindingGrid({ findings }: { findings: ProjectFinding[] }) {
             Finding {padIndex(i + 1)}
           </p>
           <p className="mt-5 text-[clamp(2.25rem,4.5vw,3.5rem)] font-semibold leading-none tracking-[-0.02em] text-ink">
-            <CountUp value={finding.headline} />
+            <span className="relative inline-block">
+              <CountUp value={finding.headline} />
+              <span
+                aria-hidden="true"
+                className="absolute inset-x-0 -bottom-1 h-[0.09em] bg-marker/70"
+              />
+            </span>
           </p>
           <h3 className="mt-4 text-base font-semibold leading-snug">{finding.title}</h3>
           {finding.explanation ? (

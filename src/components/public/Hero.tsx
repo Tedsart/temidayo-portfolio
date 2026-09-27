@@ -21,7 +21,7 @@ export function Hero() {
             </MetaLabel>
           </Reveal>
 
-          <h1 className="mt-7 text-[clamp(2.75rem,8.5vw,5.5rem)] font-semibold leading-[0.95] tracking-[-0.045em]">
+          <h1 className="mt-7 text-[clamp(2.75rem,8.5vw,5.5rem)] font-semibold leading-[0.98] tracking-[-0.02em]">
             <DisplayReveal delay={0.05}>Data that</DisplayReveal>
             <DisplayReveal delay={0.14}>
               makes{" "}

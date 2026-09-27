@@ -38,7 +38,9 @@ export function MediaUploader({
     if (!files || files.length === 0) return;
     setError(null);
 
-    if (!projectId && assetType !== "profile") {
+    // Site-level assets (profile photo, CV) live outside projects; everything
+    // else must attach to a saved project.
+    if (!projectId && assetType !== "profile" && assetType !== "cv") {
       setError("Save the project draft first — uploads attach to a saved project.");
       return;
     }
