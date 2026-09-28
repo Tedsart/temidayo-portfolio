@@ -17,8 +17,8 @@
   --font-mono: var(--font-plex-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
   --font-display: var(--font-fraunces), "Iowan Old Style", Georgia, serif;
 
-  --color-paper: #f7f4ec;
-  --color-paper-2: #efeadf;
+  --color-paper: #fefbf3;
+  --color-paper-2: #f6f1e6;
   --color-paper-3: #e6e0d1;
   /* Deepened by ~1 step: the grain overlay lifts dark fills by a few
      luminance points, so the ink starts darker to land on the brand value. */
@@ -88,13 +88,22 @@
     text-wrap: pretty;
   }
 
-  /* Paper stock, in two fixed layers that sit above every section, so the
-     whole site reads as one sheet rather than coloured boxes.
-     1) ::before — the macro material: a slow mottle (the unevenness of real
-        stock), the laid lines of mould-made paper, and a print vignette.
-     2) ::after — the micro grain: opaque greyscale fibre, blended in
-        `overlay` so it also shows on the evergreen bands (multiply alone
-        disappears on dark). Both layers ignore pointer events. */
+  /* ============================================================
+     THE PAPER — a visible background system, not a flat colour.
+     Two fixed layers sit above every section (pointer-events: none)
+     so the whole site reads as one designed sheet:
+
+     ::before (multiply) — what you see on the warm stock:
+        · ink speckle (paper fibre)
+        · a hairline data grid — the "graph paper" of the brand
+        · slow mottle + print vignette
+     ::after (screen) — the same material for the evergreen bands,
+        where multiply would be invisible: paper-coloured speckle and
+        grid lines that only light up over dark fills.
+
+     Both are tuned by measurement: the paper keeps its luminance
+     within ~3 levels while gaining a visible texture and grid.
+     ============================================================ */
   body::before {
     content: "";
     position: fixed;
@@ -102,22 +111,36 @@
     z-index: 88;
     pointer-events: none;
     mix-blend-mode: multiply;
+    /* Layer order matters: the mottle is opaque, so it sits at the BOTTOM;
+       fibre, grid and vignette are transparent and stack above it. */
     background-image:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420'%3E%3Cfilter id='c'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.012' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='0' intercept='1'/%3E%3C/feComponentTransfer%3E%3CfeComponentTransfer%3E%3CfeFuncR type='linear' slope='0.22' intercept='0.78'/%3E%3CfeFuncG type='linear' slope='0.22' intercept='0.78'/%3E%3CfeFuncB type='linear' slope='0.22' intercept='0.78'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='420' height='420' filter='url(%23c)'/%3E%3C/svg%3E"),
+      /* 1 — ink fibre */
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='190' height='190'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.043 0 0 0 0 0.075 0 0 0 0 0.055 0 0 0 1 0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='table' tableValues='0 0 0.05 0.2'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='190' height='190' filter='url(%23a)'/%3E%3C/svg%3E"),
+      /* 2 — hairline data grid (vertical, horizontal) */
+      repeating-linear-gradient(
+        90deg,
+        rgba(15, 21, 18, 0.055) 0 1px,
+        transparent 1px 76px
+      ),
       repeating-linear-gradient(
         0deg,
-        rgba(15, 21, 18, 0.03) 0 1px,
-        transparent 1px 4px
+        rgba(15, 21, 18, 0.055) 0 1px,
+        transparent 1px 76px
       ),
+      /* 3 — print vignette */
       radial-gradient(
-        125% 90% at 50% 35%,
-        transparent 55%,
-        rgba(15, 21, 18, 0.07)
-      );
+        130% 95% at 50% 32%,
+        transparent 52%,
+        rgba(15, 21, 18, 0.075)
+      ),
+      /* 4 — slow mottle: the unevenness of real stock (opaque, so last) */
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='560' height='560'%3E%3Cfilter id='c'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.008' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='0' intercept='1'/%3E%3C/feComponentTransfer%3E%3CfeComponentTransfer%3E%3CfeFuncR type='linear' slope='0.2' intercept='0.835'/%3E%3CfeFuncG type='linear' slope='0.2' intercept='0.835'/%3E%3CfeFuncB type='linear' slope='0.2' intercept='0.835'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='560' height='560' filter='url(%23c)'/%3E%3C/svg%3E");
     background-size:
-      420px 420px,
+      190px 190px,
       auto,
-      auto;
+      auto,
+      auto,
+      560px 560px;
   }
 
   body::after {
@@ -126,10 +149,53 @@
     inset: 0;
     z-index: 90;
     pointer-events: none;
-    opacity: 0.62;
-    mix-blend-mode: overlay;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='0' intercept='1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
-    background-size: 200px 200px;
+    mix-blend-mode: screen;
+    background-image:
+      /* paper dust — only shows over the dark bands */
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='190' height='190'%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch' seed='7'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.969 0 0 0 0 0.957 0 0 0 0 0.925 0 0 0 1 0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='table' tableValues='0 0 0.05 0.2'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='190' height='190' filter='url(%23b)'/%3E%3C/svg%3E"),
+      /* the same grid, drawn in paper over dark fills */
+      repeating-linear-gradient(
+        90deg,
+        rgba(247, 244, 236, 0.055) 0 1px,
+        transparent 1px 76px
+      ),
+      repeating-linear-gradient(
+        0deg,
+        rgba(247, 244, 236, 0.055) 0 1px,
+        transparent 1px 76px
+      );
+    background-size:
+      190px 190px,
+      auto,
+      auto;
+  }
+
+  /* On a phone the grid tightens so the pattern stays legible. */
+  @media (max-width: 640px) {
+    body::before {
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='190' height='190'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.043 0 0 0 0 0.075 0 0 0 0 0.055 0 0 0 1 0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='table' tableValues='0 0 0.05 0.2'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='190' height='190' filter='url(%23a)'/%3E%3C/svg%3E"),
+        repeating-linear-gradient(
+          90deg,
+          rgba(15, 21, 18, 0.055) 0 1px,
+          transparent 1px 48px
+        ),
+        repeating-linear-gradient(
+          0deg,
+          rgba(15, 21, 18, 0.055) 0 1px,
+          transparent 1px 48px
+        ),
+        radial-gradient(
+          140% 100% at 50% 30%,
+          transparent 50%,
+          rgba(15, 21, 18, 0.075)
+        );
+      background-size:
+        190px 190px,
+        auto,
+        auto,
+        auto;
+    }
   }
 
   /* Underline sweep for quiet links. */
