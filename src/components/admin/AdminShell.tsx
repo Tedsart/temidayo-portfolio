@@ -11,13 +11,14 @@ export function AdminShell({
   email,
   children,
 }: {
-  active: "dashboard" | "projects" | "media" | "settings";
+  active: "dashboard" | "projects" | "products" | "media" | "settings";
   email: string | null;
   children: React.ReactNode;
 }) {
   const items = [
     { id: "dashboard" as const, label: "Dashboard", href: "/admin" },
     { id: "projects" as const, label: "Projects", href: "/admin/projects" },
+    { id: "products" as const, label: "Products", href: "/admin/products" },
     { id: "media" as const, label: "Media", href: "/admin/media" },
     { id: "settings" as const, label: "Site settings", href: "/admin/settings" },
   ];

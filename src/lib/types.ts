@@ -24,7 +24,8 @@ export type AssetType =
   | "document"
   | "dataset"
   | "other"
-  | "cv";
+  | "cv"
+  | "cover";
 
 export const ASSET_TYPES: AssetType[] = [
   "thumbnail",
@@ -36,6 +37,7 @@ export const ASSET_TYPES: AssetType[] = [
   "dataset",
   "other",
   "cv",
+  "cover",
 ];
 
 export const IMAGE_ASSET_TYPES: AssetType[] = [
@@ -44,6 +46,7 @@ export const IMAGE_ASSET_TYPES: AssetType[] = [
   "dashboard",
   "report_page",
   "profile",
+  "cover",
 ];
 
 export const FILE_ASSET_TYPES: AssetType[] = [
@@ -208,6 +211,109 @@ export interface SiteProfile {
   statistics_background: string | null;
   experience: ExperienceEntry[];
   interests: string | null;
+}
+
+
+/* ---------------------------------------------------------------------------
+ * Digital products (Writing & Products)
+ *
+ * Deliberately small: the site displays the product and links out to Selar,
+ * which owns checkout, payment and delivery. Nothing here stores or touches
+ * payment data.
+ * ------------------------------------------------------------------------- */
+
+export type ProductType =
+  | "ebook"
+  | "template"
+  | "guide"
+  | "resource"
+  | "course"
+  | "other";
+
+export const PRODUCT_TYPES: ProductType[] = [
+  "ebook",
+  "template",
+  "guide",
+  "resource",
+  "course",
+  "other",
+];
+
+export const PRODUCT_TYPE_LABELS: Record<ProductType, string> = {
+  ebook: "Ebook",
+  template: "Template",
+  guide: "Guide",
+  resource: "Resource",
+  course: "Course",
+  other: "Other",
+};
+
+export interface Product {
+  id: string;
+  type: ProductType;
+  title: string;
+  slug: string;
+  subtitle: string | null;
+  short_description: string | null;
+  long_description: string | null;
+  cover: ProjectAsset | null;
+  price_amount: number | null;
+  currency: string;
+  price_display: string | null;
+  badge: string | null;
+  product_url: string | null;
+  checkout_url: string | null;
+  button_text: string;
+  secondary_button_text: string | null;
+  secondary_url: string | null;
+  author: string | null;
+  page_count: number | null;
+  format: string | null;
+  audience: string | null;
+  outcomes: string[];
+  preview_note: string | null;
+  featured: boolean;
+  sort_order: number;
+  enabled: boolean;
+  published: boolean;
+  seo_title: string | null;
+  seo_description: string | null;
+  created_at: string;
+  updated_at: string;
+  published_at: string | null;
+}
+
+/** The shape the CMS editor saves. */
+export interface ProductInput {
+  id?: string;
+  type: ProductType;
+  title: string;
+  slug: string;
+  subtitle: string | null;
+  short_description: string | null;
+  long_description: string | null;
+  cover_asset_id: string | null;
+  price_amount: number | null;
+  currency: string;
+  price_display: string | null;
+  badge: string | null;
+  product_url: string | null;
+  checkout_url: string | null;
+  button_text: string;
+  secondary_button_text: string | null;
+  secondary_url: string | null;
+  author: string | null;
+  page_count: number | null;
+  format: string | null;
+  audience: string | null;
+  outcomes: string[];
+  preview_note: string | null;
+  featured: boolean;
+  sort_order: number;
+  enabled: boolean;
+  published: boolean;
+  seo_title: string | null;
+  seo_description: string | null;
 }
 
 export interface AdminStats {

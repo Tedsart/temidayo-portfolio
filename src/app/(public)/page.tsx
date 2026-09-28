@@ -6,6 +6,7 @@ import { FallbackNotice } from "@/components/public/FallbackNotice";
 import { Hero } from "@/components/public/Hero";
 import { ProcessTimeline } from "@/components/public/ProcessTimeline";
 import { Ticker } from "@/components/public/Ticker";
+import { ProductFeature } from "@/components/public/ProductFeature";
 import { ProjectList } from "@/components/public/ProjectCard";
 import { Reveal } from "@/components/motion/Reveal";
 import { Container, EmptyState, SectionHeading } from "@/components/ui/primitives";
@@ -109,7 +110,11 @@ export default async function HomePage() {
         </div>
       </Container>
 
-      {/* 05 — Contact */}
+      {/* 05 — Writing & Products. Optional: renders nothing when there is no
+          live product, so the page keeps its shape either way. */}
+      <ProductFeature />
+
+      {/* 06 — Contact */}
       {siteProfile ? <ContactCTA profile={siteProfile} /> : null}
     </>
   );

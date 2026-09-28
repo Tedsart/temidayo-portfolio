@@ -121,6 +121,98 @@ export interface Database {
           },
         ];
       };
+      products: {
+        Row: {
+          id: string;
+          type:
+            | "ebook"
+            | "template"
+            | "guide"
+            | "resource"
+            | "course"
+            | "other";
+          title: string;
+          slug: string;
+          subtitle: string | null;
+          short_description: string | null;
+          long_description: string | null;
+          cover_asset_id: string | null;
+          price_amount: number | null;
+          currency: string;
+          price_display: string | null;
+          badge: string | null;
+          product_url: string | null;
+          checkout_url: string | null;
+          button_text: string;
+          secondary_button_text: string | null;
+          secondary_url: string | null;
+          author: string | null;
+          page_count: number | null;
+          format: string | null;
+          audience: string | null;
+          outcomes: Json;
+          preview_note: string | null;
+          featured: boolean;
+          sort_order: number;
+          enabled: boolean;
+          published: boolean;
+          seo_title: string | null;
+          seo_description: string | null;
+          created_at: string;
+          updated_at: string;
+          published_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          type?:
+            | "ebook"
+            | "template"
+            | "guide"
+            | "resource"
+            | "course"
+            | "other";
+          title: string;
+          slug: string;
+          subtitle?: string | null;
+          short_description?: string | null;
+          long_description?: string | null;
+          cover_asset_id?: string | null;
+          price_amount?: number | null;
+          currency?: string;
+          price_display?: string | null;
+          badge?: string | null;
+          product_url?: string | null;
+          checkout_url?: string | null;
+          button_text?: string;
+          secondary_button_text?: string | null;
+          secondary_url?: string | null;
+          author?: string | null;
+          page_count?: number | null;
+          format?: string | null;
+          audience?: string | null;
+          outcomes?: Json;
+          preview_note?: string | null;
+          featured?: boolean;
+          sort_order?: number;
+          enabled?: boolean;
+          published?: boolean;
+          seo_title?: string | null;
+          seo_description?: string | null;
+          created_at?: string;
+          updated_at?: string;
+          published_at?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["products"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "products_cover_asset_id_fkey";
+            columns: ["cover_asset_id"];
+            isOneToOne: false;
+            referencedRelation: "project_assets";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       project_assets: {
         Row: {
           id: string;
@@ -134,7 +226,8 @@ export interface Database {
             | "document"
             | "dataset"
             | "other"
-            | "cv";
+            | "cv"
+            | "cover";
           storage_path: string;
           file_name: string;
           mime_type: string | null;
@@ -155,7 +248,8 @@ export interface Database {
             | "document"
             | "dataset"
             | "other"
-            | "cv";
+            | "cv"
+            | "cover";
           storage_path: string;
           file_name: string;
           mime_type?: string | null;
@@ -277,7 +371,15 @@ export interface Database {
         | "document"
         | "dataset"
         | "other"
-        | "cv";
+        | "cv"
+        | "cover";
+      product_type:
+        | "ebook"
+        | "template"
+        | "guide"
+        | "resource"
+        | "course"
+        | "other";
       link_type:
         | "powerbi"
         | "looker"
